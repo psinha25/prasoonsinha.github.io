@@ -4,7 +4,7 @@
 # baseurl is the website's URL without the hostname
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
-url: "https://vishal-wiai.github.io"
+url: "https://thevishalagarwal.github.io"
 baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
@@ -44,7 +44,7 @@ avatar: "/static/img/vishal.jpg"
 author:
   name: Vishal Agarwal
   email: "vishal@wadhwaniai.org"
-  github: vishal-wiai    # eg. daattali
+  github: thevishalagarwal    # eg. daattali
   linkedin: vishal-agarwal
   twitter: The_Vobot
 
@@ -75,11 +75,11 @@ share-links-active:
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "vishal-wiai.github.io"  # eg. "deanattali.com/beautiful-jekyll"
+url-pretty: "thevishalagarwal.github.io"  # eg. "deanattali.com/beautiful-jekyll"
 
 # --- Misc --- #
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
-disqus: "vishal-wiai-github-io"
+disqus: "thevishalagarwal-github-io"
 
 # Fill in your Google Analytics ID to track your website using GA
 google_analytics: "UA-121781547-1"
