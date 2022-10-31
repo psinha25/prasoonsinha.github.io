@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Publications
-subtitle: [Google Scholar](https://scholar.google.com/citations?user=ph85QrgAAAAJ&hl=en)
+subtitle: Check out my Google Scholar!
 ---
 
 <!-- You can also browse my [Google Scholar](https://scholar.google.com/citations?user=iT54hbMAAAAJ&hl=en) profile  -->
@@ -9,7 +9,7 @@ subtitle: [Google Scholar](https://scholar.google.com/citations?user=ph85QrgAAAA
 
 **Conference**
 
-<!-- - **Pest management in cotton farms: an AI-system case study from the global South**  
+- **Pest management in cotton farms: an AI-system case study from the global South**  
 	Aman Dalmia, Jerome White, Ankit Chaurasia, **Vishal Agarwal**, Rajesh Jain, Dhruvin Vora, Balasaheb Dhame, Raghu Dharmaraju, Rahul Panicker.  
 	*2020 ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD)*.  
 	[PDF](https://dl.acm.org/doi/10.1145/3394486.3403363){: .btn}
@@ -32,4 +32,4 @@ subtitle: [Google Scholar](https://scholar.google.com/citations?user=ph85QrgAAAA
 
 - **An Interval Type-2 Fuzzy Approach to Automatic PDF Generation for Histogram Specification**  
     **Vishal Agarwal**, Diwanshu Jain, Vamshi K Reddy, Frank Chung-Hoon Rhee  
-    [PDF](https://arxiv.org/abs/1805.02173){: .btn}  -->
+    [PDF](https://arxiv.org/abs/1805.02173){: .btn} 
