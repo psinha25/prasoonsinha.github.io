@@ -9,14 +9,14 @@ social-share: false
 readtime: true
 ---
 
-#### Post Goal:
+**Post Goal:**
 
 This blog post summarizes how to compile and run a customized Linux kernel on a KVM-qemu virtual machine. It specifies:
 1. How to run a VM in KVM using a cloud image
 2. How to use a customized Linux kernel in place of the default shipped cloud image kernel
 3. How to use GDB with a customized Linxux kernel in KVM.
 
-#### Hardware & Software Specs:
+**Hardware & Software Specs:**
 
 The specs of my test environment are: 
 - CPU: Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz
@@ -29,5 +29,5 @@ The specs of my test environment are:
 - Guest Kernel Version: Linux 5.19.7
 - QEMU emulator version: 6.2.0
 
-#### Booting a VM in KVM w/o Customized Linux Kernel
+**Booting a VM in KVM w/o Customized Linux Kernel:**
 
