@@ -4,9 +4,7 @@ title: Booting Ubuntu VM on top of KVM-Qemu Hypervisor
 layout: post
 tags: [linux, virtual machine, operating systems]
 mathjax: true
-image: /static/img/prasoon-sinha.png
-cover-img: "/static/img/linux-vm-cover.png"
-share-img: /static/img/prasoon-sinha.png
+cover-img: /static/img/linux-vm-cover.png
 social-share: false
 readtime: true
 ---
