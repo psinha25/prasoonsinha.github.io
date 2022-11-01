@@ -146,7 +146,7 @@ $ sudo qemu-system-x86_64 \
 
 I verified that my VM kernel version was correct by running `uname -r` in my VM. Moreover, I verified that my VM had internet access by successfully executing `sudo apt-get install bison`.
 
-**Booting Information**
+**Booting Information:**
 
 To measure the amount of time the kernel spent booting, I used two different commands: `dmesg` and `systemd-analyze`. The `dmesg` command prints the kernel ring buffer, where the kernel and other devices write bootup messages. The final line of `dmesg` showed [24.975658], which is when the last message was written to the kernel buffer. When running `systemd-analyze` in our VM, I saw 
 
@@ -160,7 +160,7 @@ Next, I analyzed `dmesg` to see the kernel connecting to various devices. I used
 
 I then used the classes of each to determine the devices connected to that bus. Specifically, I examined the Host Bridge type 00 PCI bus from the `dmesg` output. Below are lines found in the `dmesg` output, with each line representing a different device.
 
-![pcie-classes message](/static/img/pcie=classes.jpeg)
+![pcie-classes message](/static/img/pcie-classes.jpeg)
 
 Each of the different hex values corresponds to a different macro defined in [include/linux/pci_ids.h(https://elixir.bootlin.com/linux/v5.19.7/source/include/linux/pci_ids.h#L32). We see the following:
 
@@ -174,7 +174,7 @@ Each of the different hex values corresponds to a different macro defined in [in
 ```
 I interpret the address to specify the devices. For example, `0x0200` is the address for a network PCI Ethernet device. This aligns with the `dmesg` output as well as the `lspci` result. 
 
-**Creating a KVM+GDB Friendly Kernel**
+**Creating a KVM+GDB Friendly Kernel:**
 
 To enable using GDB with KVM, I needed to properly set some `CONFIG_DEBUG_*` options in the `.config` file. Below is more information about each option we changed:
 
@@ -195,7 +195,8 @@ $ gdb vmlinux
 (gdb) target remote: 3872
 ```
 
-**Summary**
+**Summary:**
+
 I hope this post is helpful to students or others just trying to set up a VM on top of a KVM hypervisor via the command line. Surprisingly, there isn't great documentation online for the `qemu-system-x86_64` command and I had to dig very deep into source code and random documentation to get this entire process to work. Hopefully this will save you a lot of time!
 
 
