@@ -1,5 +1,5 @@
 ---
-title: Booting Ubuntu VM on top of KVM-Qemu Hypervisor
+title: 💻 Booting Ubuntu VM on top of KVM-Qemu Hypervisor
 # sub-title: Model Serving
 layout: post
 tags: [linux, virtual machine, operating systems]
