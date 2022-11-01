@@ -79,7 +79,7 @@ url-pretty: "psinha25.github.io"  # eg. "deanattali.com/beautiful-jekyll"
 
 # --- Misc --- #
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
-disqus: "psinha25-github-io"
+# disqus: "psinha25-github-io"
 
 # Fill in your Google Analytics ID to track your website using GA
 google_analytics: "UA-121781547-1"
