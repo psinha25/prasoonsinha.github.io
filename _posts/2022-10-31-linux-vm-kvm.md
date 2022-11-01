@@ -117,7 +117,7 @@ The `-m` flag specifies the partition in the disk image that I want to mount. I 
 
 Ultimately, running the `guestmount` command in `sudo` (`sudo su`) enabled me to successfully mount the disk image and overcome the Permission Denied error. I then copied the installed kernel modules (using the `cp` command) from `~/install_mod_dir/lib/modules` to `~/mount_point/lib/modules` and unmounted the disk image 
 ```console
-fusermount -u ~/mount_point
+$ fusermount -u ~/mount_point
 ```
 One issue I encountered as I was attempting to copy the kernel modules to the disk image was running out of disk space. This is because the default virtual disk size was 2.2 GB. To increase the virtual disk size, I ran 
 ```console
@@ -145,4 +145,58 @@ $ sudo qemu-system-x86_64 \
 - `-append “root=/dev/sda1 console=ttys0,115200n8”` specified where the partition of the root directory on our disk image is and to add a console to the log in of the VM
 
 I verified that my VM kernel version was correct by running `uname -r` in my VM. Moreover, I verified that my VM had internet access by successfully executing `sudo apt-get install bison`.
+
+**Booting Information**
+
+To measure the amount of time the kernel spent booting, I used two different commands: `dmesg` and `systemd-analyze`. The `dmesg` command prints the kernel ring buffer, where the kernel and other devices write bootup messages. The final line of `dmesg` showed [24.975658], which is when the last message was written to the kernel buffer. When running `systemd-analyze` in our VM, I saw 
+
+![systemd-analyze message](/static/img/systemmd-analyze.jpeg)
+
+As seen, there is a difference between the elapsed wall clock time reported by `systemd-analyze` and the time reported by the kernel. This is because the `dmesg` command simply collects information from the kernel ring buffer and is hence not a reliable source for determining how long the boot-up process took. Device drivers and other kernel messages could have been written to the kernel ring buffer at any point in time. In fact, there may be other system processes spawning between those messages. Thus, `systemd-analyze` is a more accurate utility for determining boot up time. 
+
+Next, I analyzed `dmesg` to see the kernel connecting to various devices. I used `lspci` to see information about each PCI bus on my VM:
+
+![dmesg-pcie message](/static/img/dmesg-pcie.jpeg)
+
+I then used the classes of each to determine the devices connected to that bus. Specifically, I examined the Host Bridge type 00 PCI bus from the `dmesg` output. Below are lines found in the `dmesg` output, with each line representing a different device.
+
+![pcie-classes message](/static/img/pcie=classes.jpeg)
+
+Each of the different hex values corresponds to a different macro defined in [include/linux/pci_ids.h(https://elixir.bootlin.com/linux/v5.19.7/source/include/linux/pci_ids.h#L32). We see the following:
+
+```
+#define PCI_BASE_CLASS_NETWORK		    0x02
+#define PCI_CLASS_NETWORK_ETHERNET	    0x0200
+#define PCI_CLASS_NETWORK_TOKEN_RING	0x0201
+#define PCI_CLASS_NETWORK_FDDI		    0x0202
+#define PCI_CLASS_NETWORK_ATM		    0x0203
+#define PCI_CLASS_NETWORK_OTHER		    0x0280
+```
+I interpret the address to specify the devices. For example, `0x0200` is the address for a network PCI Ethernet device. This aligns with the `dmesg` output as well as the `lspci` result. 
+
+**Creating a KVM+GDB Friendly Kernel**
+
+To enable using GDB with KVM, I needed to properly set some `CONFIG_DEBUG_*` options in the `.config` file. Below is more information about each option we changed:
+
+- `CONFIG_DEBUG_INFO=y`: compiles the customized kernel with debug info enabled
+- `CONFIG_DEBUG_INFO_DWARF4=y`: creates dwarf4 debug info
+- `CONFIG_GDB_SCRIPTS=y`: creates links to GDB helper scripts in the build directory
+- `CONFIG_GDB_INFO_REDUCED=n`: disables reduced gdb info
+- `CONFIG_FRAME_POINTER=y`: compiles the kernel with frame pointers, this was enabled because the host architecture supports it
+- `CONFIG_KGDB=y`: enables remote debugging of the customized kernel
+- `CONFIG_SATA_AHCI=y`: enables support for AHCI Serial ATA
+- `CONFIG_KVM_GUEST=y`: option enables various optimizations for running under the KVM hypervisor
+- `CONFIG_RANDOMIZE_BASE=n`: disables Kernel Address Space Layout Randomization (KASLR); I also added `nokaslr` to `-append` in our boot command
+- `CONFIG_SMP=y`: enables Symmetric multiprocessing support (SMP), or in other words support for our VM using more than one core
+
+After changing the `.config`, I remade my kernel, rebuilt my kernel modules, and reinstalled my kernel modules. Then, I copied the new kernel modules to my disk image, as done previously in the lab. Finally, I included `-gdb tcp::3872` in my QEMU boot command. This allowed me to set up a remote connection to my VM when running gdb in my host machine. Specifically, after launching my VM with my boot command, in `~/kbuild` I ran the following to get my gdb session to remotely connect to my VM:
+```console
+$ gdb vmlinux
+(gdb) target remote: 3872
+```
+
+**Summary**
+I hope this post is helpful to students or others just trying to set up a VM on top of a KVM hypervisor via the command line. Surprisingly, there isn't great documentation online for the `qemu-system-x86_64` command and I had to dig very deep into source code and random documentation to get this entire process to work. Hopefully this will save you a lot of time!
+
+
 
