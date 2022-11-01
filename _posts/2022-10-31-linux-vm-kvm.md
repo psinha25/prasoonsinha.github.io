@@ -32,14 +32,13 @@ The specs of my test environment are:
 
 **Booting a VM in KVM w/o Customized Linux Kernel:**
 
-There are a variety of resources online that suggest that you use `virt-install` and `virsh` to set KVM-based VM. At first, I tried using these 
-utilities as Ill, and with an Ubuntu ISO image I did reach a point where I launched a VM that I could `ssh` into. However, using `virsh` to successfully
+There are a variety of resources online that suggest using `virt-install` and `virsh` to set KVM-based VMs. At first, I tried using these utilities as well, and with an Ubuntu ISO image I did reach a point where I launched a VM that I could `ssh` into. However, using `virsh` to
 shutdown and/or startup the VM was unsuccessful. Therefore, I pivoted to using the `qemu-system-x86_64` command instead, which does not abstract 
 away as much of the VM management details like `virt-install` and `virsh`. 
 
-Initially, I attempted to use an [Ubuntu ISO image](https://ubuntu.com/download/desktop) with `qemu-system-x86_64`. However, I struggled to successfully boot the VM. This is because the recent releases of Ubuntu ship with a graphical installer, which made it difficult to use since I was using a remote server as our host machine (it is strange I successfully used the ISO with `virt-intall` without X-forwarding but found tremendous difficulty with it when using `qemu-system-x86_64`). As such, I ultimately (and successfully) used a cloud image to boot our VM on the zerberus remote server. 
+Initially, I attempted to use an [Ubuntu ISO image](https://ubuntu.com/download/desktop) with `qemu-system-x86_64`. However, I struggled to successfully boot the VM. This is because the recent releases of Ubuntu ship with a graphical installer, which made it difficult to use since I was using a remote server as my host machine (it is strange I successfully used the ISO with `virt-intall` without X-forwarding but found tremendous difficulty with it when using `qemu-system-x86_64`). As such, I ultimately (and successfully) used a cloud image to boot my VM on my remote server.
 
-To guide the use of a cloud image, I used this [great blog post](https://powersj.io/posts/ubuntu-qemu-cli/) about cloud image and `cloud-init`. I used the Ubuntu 20.04 [LTS Focal cloud disk image](https://cloud-images.ubuntu.com/focal/current/). Unlike the Ubuntu ISO, a cloud config image is also needed to specify who can login to the virtual cloud server. This is because when VM instances are launched in cloud, `cloud-init` searches for a datasource to obtain instance metadata. Since I was launching a local QEMU image, I provided a local data source for the cloud image to read from. There is a plethora of configurations that can be set, but the purposes of this tutorial I provided minimal configurations, as shown below: 
+To guide the use of a cloud image, I used this [great blog post](https://powersj.io/posts/ubuntu-qemu-cli/) about cloud images and `cloud-init`. I used the Ubuntu 20.04 [LTS Focal cloud disk image](https://cloud-images.ubuntu.com/focal/current/). Unlike the Ubuntu ISO, a cloud config image is also needed to specify who can login to your virtual cloud server. This is because when VM instances are launched in cloud, `cloud-init` searches for a datasource to obtain instance metadata. Since I was launching a local QEMU image, I provided a local data source for the cloud image to read from. There is a plethora of configurations that can be set, but for the purposes of this tutorial I provided minimal configurations, as shown below: 
 
 ```console
 $ cat metadata.yaml 
@@ -69,21 +68,21 @@ $ sudo qemu-system-x86_64 \
     -drive if=virtio,format=raw,file=seed.img
 ```
 Here's a breakdown of the command:
-- `-machine accel=kvm`,type=q35 enables KVM acceleration, which improves VM performance compared to using QEMU.
+- `-machine accel=kvm,type=q35` enables KVM acceleration, which improves VM performance compared to using QEMU
 - `-cpu host` selects the CPU model and passes host processor features to the guest 
-- `-m 4G` sets the amount of memory for the VM instance.
-- `-smp 4` sets the number of cores for a symmetric multiprocessing (SMP) computer.
-- `-nographic` disables graphical output such that QEMU is a simple CLI application accessible within the terminal window we are using to launch the VM.
-- `-device virtio-net-pcci,netdev=net0` creates a virtio pass-through network device.
-- `-netdev user,id=net0,hostfwd=tcp::10022-:22` directs QEMU to listen to port 10022 on the host and relay any connections to port 22 on the VM. This allowed me to `ssh` into my VM without obtaining its IP address.
-- `-drive if=virtio,format=qcow2,file=~/focal-server-cloudimg-amd64.img` specifies the Ubuntu cloud image downloaded earlier as the virtual disk image for our VM.
-- `-drive if=virtio,format=raw,file=seed.img` specifies that the seed image we created earlier will be a secondary image used as our local datasource 
+- `-m 4G` sets the amount of memory for the VM instance
+- `-smp 4` sets the number of cores for a symmetric multiprocessing (SMP) computer
+- `-nographic` disables graphical output such that QEMU is a simple CLI application accessible within the terminal window we are using to launch the VM
+- `-device virtio-net-pcci,netdev=net0` creates a virtio pass-through network device
+- `-netdev user,id=net0,hostfwd=tcp::10022-:22` directs QEMU to listen to port 10022 on the host and relay any connections to port 22 on the VM. This allowed me to `ssh` into my VM without obtaining its IP address
+- `-drive if=virtio,format=qcow2,file=~/focal-server-cloudimg-amd64.img` specifies the Ubuntu cloud image downloaded earlier as the virtual disk image for my VM
+- `-drive if=virtio,format=raw,file=seed.img` specifies that the seed image I created earlier will be a secondary image used as my local datasource 
 
 After running the boot command, I accessed the VM directly via a separate terminal window. Since in my boot command I created a redirect of localhost’s port 10022 to forward traffic to my VM’s port 22, I `ssh` to my VM using port 10022 with `ssh -p 10022 ubuntu@0.0.0.0`. I verified my VM has internet access by simply executing `sudo apt-get install vim` in my VM to ensure the `apt-get` utility can connect to the internet and install any packages.
 
 **Booting a VM in KVM w/ a Customized Linux Kernel:**
 
-The last section focused on booting a VM with an Ubuntu 20.04 cloud image. I did not change the kernel version that ships with the cloud image. In this section, I will show how you can use your own kernel version and install kernel modules. The benefit of doing this is you can edit the source code of the kernel and see the implications of your changes in your VM. 
+The previous section focused on booting a VM with an Ubuntu 20.04 cloud image. I did not change the kernel version that ships with the cloud image. In this section, I will show you how you can use your own kernel version and install kernel modules. The benefit of doing this is you can edit the source code of the kernel and see the implications of your changes in your VM. 
 
 I used the [Linux Kernel 5.19.7](https://kernel.org/). After `wget`ting the tar file, I extracted the source code into `~/linux-5.19.7` on my host machine, created a separate build directory `~/kbuild` (which was a sibling of `~/linux-5.19.7`) and ran the following in `~/kbuild`:
 
@@ -97,7 +96,7 @@ This makes a configuration file (`.config`) in `~/kbuild` with the default optio
 
 This ensured that during the installation of kernel modules (the following step), I did not need any signatures to install the modules. I also ensured that `CONFIG_SATA_AHCI=y` such that the SATA disk driver was built into the kernel. 
 
-I next built the kernel in `~/kbuild` by running `make -j4`. The `-j4` option sppeds up the building process by using multiple cores. Unfortunately, the build still took around 2 hours! After doing so, I installed the kernel modules locally on my host machine. Since I did not pare down my `.config` file or use `make menuconfig`, the default kernel modules that ship with the Linux Kernel 5.19.7 were installed. I created another directory `~/install_mod_dir` to install the kernel modules. In `~/kbuild`, I executed:
+I next built the kernel in `~/kbuild` by running `make -j4`. The `-j4` option speeds up the building process by using multiple cores. Unfortunately, the build still took around 2 hours! After doing so, I installed the kernel modules locally on my host machine. Since I did not pair down my `.config` file or use `make menuconfig`, the default kernel modules that ship with the Linux Kernel 5.19.7 were installed. I created another directory `~/install_mod_dir` to install the kernel modules. In `~/kbuild`, I executed:
 ```console
 $ make INSTALL_MOD_PATH=<install_mod_dir> modules_install
 ```
