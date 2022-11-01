@@ -4,20 +4,19 @@ title: Booting Ubuntu VM on top of KVM-Qemu Hypervisor
 layout: post
 tags: [linux, virtual machine, operating systems]
 mathjax: true
+showavatar: false
 cover-img: /static/img/linux-vm-cover.png
 social-share: false
 readtime: true
 ---
 
 **Post Goal:**
-
 This blog post summarizes how to compile and run a customized Linux kernel on a KVM-qemu virtual machine. It specifies:
 1. How to run a VM in KVM using a cloud image
 2. How to use a customized Linux kernel in place of the default shipped cloud image kernel
 3. How to use GDB with a customized Linxux kernel in KVM.
 
 **Hardware & Software Specs:**
-
 The specs of my test environment are: 
 - CPU: Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz
 - Architecture: x86_64
