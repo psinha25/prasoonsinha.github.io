@@ -15,9 +15,10 @@ readtime: true
 This blog post summarizes how to compile and run a customized Linux kernel on a KVM-qemu virtual machine. It specifies:
 1. How to run a VM in KVM using a cloud image
 2. How to use a customized Linux kernel in place of the default shipped cloud image kernel
-3. How to use GDB with a customized Linxux kernel in KVM.
+3. How to use GDB with a customized Linxux kernel in KVM
 
 **Hardware & Software Specs:**
+
 The specs of my test environment are: 
 - CPU: Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz
 - Architecture: x86_64
@@ -38,7 +39,7 @@ away as much of the VM management details like `virt-install` and `virsh`.
 
 Initially, I attempted to use an [Ubuntu ISO image](https://ubuntu.com/download/desktop) with `qemu-system-x86_64`. However, I struggled to successfully boot the VM. This is because the recent releases of Ubuntu ship with a graphical installer, which made it difficult to use since I was using a remote server as our host machine (it is strange I successfully used the ISO with `virt-intall` without X-forwarding but found tremendous difficulty with it when using `qemu-system-x86_64`). As such, I ultimately (and successfully) used a cloud image to boot our VM on the zerberus remote server. 
 
-To guide the use of a cloud image, I used this (great blog post)[https://powersj.io/posts/ubuntu-qemu-cli/] about cloud image and `cloud-init`. I used the Ubuntu 20.04 (LTS Focal cloud disk image)[https://cloud-images.ubuntu.com/focal/current/]. Unlike the Ubuntu ISO, a cloud config image is also needed to specify who can login to the virtual cloud server. This is because when VM instances are launched in cloud, `cloud-init` searches for a datasource to obtain instance metadata. Since I was launching a local QEMU image, I provided a local data source for the cloud image to read from. There is a plethora of configurations that can be set, but the purposes of this tutorial I provided minimal configurations, as shown below: 
+To guide the use of a cloud image, I used this [great blog post](https://powersj.io/posts/ubuntu-qemu-cli/) about cloud image and `cloud-init`. I used the Ubuntu 20.04 [LTS Focal cloud disk image](https://cloud-images.ubuntu.com/focal/current/). Unlike the Ubuntu ISO, a cloud config image is also needed to specify who can login to the virtual cloud server. This is because when VM instances are launched in cloud, `cloud-init` searches for a datasource to obtain instance metadata. Since I was launching a local QEMU image, I provided a local data source for the cloud image to read from. There is a plethora of configurations that can be set, but the purposes of this tutorial I provided minimal configurations, as shown below: 
 
 ```console
 $ cat metadata.yaml 
@@ -84,7 +85,7 @@ After running the boot command, I accessed the VM directly via a separate termin
 
 The last section focused on booting a VM with an Ubuntu 20.04 cloud image. I did not change the kernel version that ships with the cloud image. In this section, I will show how you can use your own kernel version and install kernel modules. The benefit of doing this is you can edit the source code of the kernel and see the implications of your changes in your VM. 
 
-I used the [Linux Kerne 5.19.7](https://kernel.org/). After `wget`ting the tar file, I extracted the source code into `~/linux-5.19.7` on my host machine, created a separate build directory `~/kbuild` (which was a sibling of `~/linux-5.19.7`) and ran the following in `~/kbuild`:
+I used the [Linux Kernel 5.19.7](https://kernel.org/). After `wget`ting the tar file, I extracted the source code into `~/linux-5.19.7` on my host machine, created a separate build directory `~/kbuild` (which was a sibling of `~/linux-5.19.7`) and ran the following in `~/kbuild`:
 
 ```console
 $ yes "" | make -C <kernel dir> O=$(pwd) config
@@ -162,7 +163,7 @@ I then used the classes of each to determine the devices connected to that bus. 
 
 ![pcie-classes message](/static/img/pcie-classes.jpeg)
 
-Each of the different hex values corresponds to a different macro defined in [include/linux/pci_ids.h(https://elixir.bootlin.com/linux/v5.19.7/source/include/linux/pci_ids.h#L32). We see the following:
+Each of the different hex values corresponds to a different macro defined in [include/linux/pci_ids.h](https://elixir.bootlin.com/linux/v5.19.7/source/include/linux/pci_ids.h#L32). We see the following:
 
 ```
 #define PCI_BASE_CLASS_NETWORK		    0x02
