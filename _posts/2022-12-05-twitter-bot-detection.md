@@ -92,19 +92,23 @@ The below heatmap shows how the features are correlated among themselves and als
 
 From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This possibly means that, more the number of followers, more a user is likely to be listed. 
 
-We next explored various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers and performed hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. The table below summarizes the results on both the validation set and the test set. It can be seen that the Random Forest classifier performs the best in terms of accuracy among all the other models on the test set while Catboost classifier works best on the validation data. It was interesting to see that manually experimentation on selecting and dropping certain features had a significant impact on the model performance. These decisions were influenced by the insights from the correlation table. Overall, all models achieved about 81% accuracy
+We next explored various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers and performed hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. The table below summarizes the results on both the validation set and the test set.
 
 ![Feature Based Importances Table 1](/static/img/feature_based_table1.png)
 
-The feature importances as obtained from training the xgboost model is as follows:
+We see that the Random Forest classifier performs the best in terms of test set accuracy across all the models. Meanwhile, CatBoost performs the best on the validation data set. Moreover, it was interesting to see that manually selecting and dropping certain features had a significant impact on the model performance. These decisions were influenced by the insights from the correlation table. Overall, all models achieved about 81% accuracy.
+
+The feature importances as obtained from training the XGBoost model is as follows:
 
 ![Feature Based Importances](/static/img/feature_based_importances.png)
 
 The 4 most important features that the model trains on are `description_entropy`, `tweet count`, `followers`, and `friends`. 
 
-As part of feature selection, we also tried out the forward select based SequentialFeatureSelector (SFS). This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. Catboost classifier was used as a base model for SFS. This run selected 11 features, namely, `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, `default_profile`, as the final features to be used for modeling. Using these features, we re-trained the same classifiers that we used before. It gave improvements in validation accuracy and, but it could not give better results that the best model from the previous experiment of 81.9%.
+As part of feature selection, we also tried out the forward select based SequentialFeatureSelector (SFS). This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. CatBoost classifier was used as a base model for SFS. This run selected 11 features, namely, `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, `default_profile`, as the final features to be used for modeling. Using these features, we re-trained the same classifiers that we used before. The table below shows our results. 
 
 ![Feature Based Importances Table 2](/static/img/feature_based_table2.png)
+
+Overall, we notice that this approach improved validation accuracy, but did not improve the test set accuracy. That is, it could not achieve an accuracy higher than 81.9%, the highest accuracy achieved in the previous experiment. 
 
 *Disadvantages of feature-based method:*
 While this method can identify the important features that can help in detecting Twitter bot accounts,  the bot operators are increasingly aware of the hand-crafted features and often try to tamper with these features to elude detection. Hence, it is difficult for the feature-based methods to keep up with the competition from the evolving bots. However, this when combined with other text and graph based techniques can make the model more robust.
@@ -133,7 +137,7 @@ In this short section, we explore stacking our feature-based and text-based meth
 
 ![Stack Models Architecture](/static/img/stack_oof2.jpg)
 
-Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a catboost classifier on the new set of features. The result of this model is shown in the table below.
+Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
 
 ![Stacked Model Score Table](/static/img/stack_score.jpg)
 
