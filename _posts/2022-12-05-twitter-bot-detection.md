@@ -1,5 +1,5 @@
 ---
-title: :ghost: Bot or Not? 
+title: Bot or Not? 
 # sub-title: Model Serving
 layout: post
 tags: [twitter, machine learning, bot detection]
@@ -35,6 +35,12 @@ Containing over 11.8K samples in our data set, about 56% of the samples are bots
 ![Number of Retweets Breakdown](/static/img/retweets-breakdown.jpg)
 
 There is a noticeable difference in the spread of the number of tweets and retweets between bots and users. We notice that most humans tend to have between 185-205 tweets, with outliers spanning all the way down to 0 tweets. Bots on the other hand have a wider range between 143 and 200 tweets. Hence, to answer question 1: *although the spread of tweets and retweets is larger for bots than humans, there is not a noticeable difference in the amount of tweeting between the two*. 
+
+Below are box plots summarizing the spread in followers, friends (following), and favorites (total number of likes the user’s tweets/retweets have received). 
+
+![Summary of Followers Count](/static/img/follower-count-summary.jpg)
+![Summary of Friends Count](/static/img/friend-count-summary.jpg)
+![Summary of Favorites Count](/static/img/favorites-count-summary.jpg)
 
 
 
