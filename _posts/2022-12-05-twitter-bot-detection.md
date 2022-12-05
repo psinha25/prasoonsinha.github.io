@@ -21,14 +21,14 @@ Twitter is an extremely popular social media platform, containing millions of da
 
 **TwiBot-20 Data Set**
 	
-We use a subset of the TwiBot-20 Data Set [4], a comprehensive Twitter Bot detection benchmark. Presented in the International Conference of Information, Knowledge, and Management 2020, this is the first publicly available data set of Twitter users that includes follower relationships. The authors of this data set leveraged the Twitter API to collect three modals of user information: semantic, property, and neighborhood information. To create a diverse user data set (unlike many of its predecessors), a breath-first algorithm was used to select users from the Twittersphere (graph of Twitter users, where nodes are users and edge represents a connection between two users). Below are some of the unique features this dataset contains relative to the three modals collected: 
+We use a subset of the TwiBot-20 Data Set [4], a comprehensive Twitter Bot detection benchmark. Presented in the International Conference of Information, Knowledge, and Management 2020, this is the first publicly available data set of Twitter users that includes follower relationships. The authors of this data set leveraged the Twitter API to collect three modals of user information: semantic, property, and neighborhood information. To create a diverse user data set (unlike many of its predecessors), a breath-first search algorithm was used to select users from the Twittersphere (graph of Twitter users, where nodes are users and edges represents a connection between two users). Below are some of the unique features this dataset contains relative to the three modals collected: 
 - Semantic: user tweets, retweets, and replies
 - Property: follower count, following count (friend count), verification status
 - Neighborhood: users followed and following (in the form of Twitter ID numbers)
 
 **Data Exploration**
 
-In order to obtain domain knowledge in the differences in engagement with the social media platform between bots and humans, we asked ourselves 4 questions we hoped to answer with the data we had. 
+In order to obtain domain knowledge in the differences in engagement with the social media platform between bots and humans, we explored 4 questions with the data we have.
 
 1. Is there a difference in the amount of tweeting between bots and humans?
 2. Are humans good at noticing if an account is a bot?
@@ -55,9 +55,7 @@ Finally, we examined whether there are differences in the profile makeup between
 
 ![Profile Comparison](/static/img/profile-comparison.jpg)
 
-As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a Twitter Bot or not. Thus, we present three different methods in the rest of this blog post for bot detection. 
-
-Current work in Twitter Bot Detection mainly falls into three categories: Feature-based methods, Text-based methods, and Graph-based methods. Insights from each of these methods are discussed in the next few sections.
+As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a Twitter Bot or not. Thus, we present three different methods with insights in the rest of this blog post for bot detection: feature-based methods, text-based methods, and braph-based methods.
 
 **Feature-Based Method**
 
@@ -66,17 +64,17 @@ Feature-based methods mainly focus on feature engineering with profile informati
 - `listed_count`: The number of public lists that this user is a member of
 - `followers_count`: The number of followers this account currently has
 - `statuses_count`: The number of tweets (including retweets) issued by the user
-- `friends_count`: The number of users this account is following (AKA their “followings”)
+- `friends_count`: The number of users this account is following (i.e., their “followings”)
 - `favorites_count`: The number of tweets this user has liked in the account’s lifetime
 - `verified`: When true, indicates that the user has a verified account.
 - `default_profile`: When true, indicates that the user has not altered the theme or background of their user profile
 
 The following features were derived from other features in the dataset:
 
-- `profile_image_present`: Derived from the profile_image_url feature which is a HTTPS-based URL pointing to the user’s profile image
+- `profile_image_present`: Derived from the `profile_image_url` feature which is a HTTPS-based URL pointing to the user’s profile image
 - `screen_name_length`: Length of the screen name feature which is a handle, or alias that this user identifies themselves with.
 - `screen_name_digits`: Number of digits in the screen name
-- `screen_name_entropy`: Entropy of the screen name feature. Entropy is a measure of the randomness of data and this is particularly useful for detecting bots
+- `screen_name_entropy`: Entropy of the screen name feature. Entropy is a measure of the randomness of the data, which is particularly useful for detecting bots
 - `name_length`: Length of the name feature, which is the name of the user, as they’ve defined it
 - `name_digit`: Number of digits in the name
 - `name_entropy`: Entropy of the name
@@ -90,9 +88,9 @@ The below heatmap shows how the features are correlated among themselves and als
 ![Feature Based Heatmap](/static/img/feature_based_heatmap.png)
 
 
-From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This possibly means that, more the number of followers, more a user is likely to be listed. 
+From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This suggests that an account with a high number of followers is more likely to be listed. 
 
-We next explored various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers and performed hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. The table below summarizes the results on both the validation set and the test set.
+We next explored various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers by performing hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. The table below summarizes the results on both the validation set and the test set.
 
 ![Feature Based Importances Table 1](/static/img/feature_based_table1.png)
 
@@ -104,7 +102,7 @@ The feature importances as obtained from training the XGBoost model is as follow
 
 The 4 most important features that the model trains on are `description_entropy`, `tweet count`, `followers`, and `friends`. 
 
-To further explore feature engineering in feature-based methods, we used the SequentialFeatureSelector (SFS) forward selection algorithm to select features for training. This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. CatBoost classifier was used as a base model for SFS. This run selected 11 features, namely, `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, `default_profile`, as the final features to be used for modeling. Using these features, we re-trained the same classifiers that we used before. The table below shows our results. 
+To further explore feature engineering in feature-based methods, we used the SequentialFeatureSelector (SFS) forward selection algorithm to select features for training. This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. CatBoost was used as a base model for SFS. This run selected 11 features as the final features to be used for modeling: `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, `default_profile`. With these 11 features, we re-trained the same classifiers that we used before. The table below shows our results. 
 
 ![Feature Based Importances Table 2](/static/img/feature_based_table2.png)
 
@@ -115,13 +113,15 @@ While this method can identify the important features that can help in detecting
 
 **Text-Based Method**
 
-Text-based methods utilize natural language processing (NLP) techniques to identify Twitter bots by the user's description and tweets. With the recent advancement in computing capability, large-scale pre-trained language models have shown excellent performance on various NLP tasks, such as language translation, sentiment analysis, summarization, and question answering. Additionally, one can fine-tune the language models on specific problems using limited amounts of training data and still obtain surprisingly good results. In particular, we use RoBERTa-large as our language model from [Hugging Face](https://huggingface.co/roberta-large) and finetune it on the TwiBot-20 dataset. 
+Text-based methods utilize natural language processing (NLP) techniques to identify bots from a user's description and tweets. With the recent advancement in computing capability, large-scale pre-trained language models have shown excellent performance on various NLP tasks, such as language translation, sentiment analysis, summarization, and question answering. Additionally, one can fine-tune the language models on specific problems using limited amounts of training data and still obtain surprisingly good results. In particular, we use RoBERTa-large as our language model from [Hugging Face](https://huggingface.co/roberta-large) and finetune it on the TwiBot-20 dataset. 
 
-RoBERTa [5] (Robustly Optimized BERT Pre-Training Approach) is a variant of BERT [6] (Bidirectional Encoder Representations from Transformers), a popular language processing model developed by researchers at Google. RoBERTa was introduced in 2019 by researchers at Facebook AI and implemented several design improvements based on BERT [6] to make it even more effective at NLP tasks. The model was pretrained with the Masked language modeling (MLM) objective, which allows it to learn an inner representation of the English language that can then be used to extract features useful for downstream tasks. We extract embedding from the user description and user tweets respectively to generate a description embedding and tweet embeddings for each user. Since a user can have up to 200 tweets in the dataset, we average up to 10 tweet embeddings to obtain a single tweet embedding for each user to save preprocessing time. The description embedding, tweets embedding along with labels are then used to train a multilayer perceptron(MLP) head for fine-tuning. The figure below shows the architecture of our model.
+RoBERTa [5] (Robustly Optimized BERT Pre-Training Approach) is a variant of BERT [6] (Bidirectional Encoder Representations from Transformers), a popular language processing model developed by researchers at Google. RoBERTa was introduced in 2019 by researchers at Facebook AI and implemented several design improvements based on BERT [6] to make it even more effective at NLP tasks. The model was pretrained with the Masked language modeling (MLM) objective, which allows it to learn an inner representation of the English language that can then be used to extract features useful for downstream tasks. 
+
+From the user description and tweets, we generated a desciprtion embedding and tweet embedding for each user, respectively. Since a user can have up to 200 tweets in the dataset, we averaged up to 10 tweet embeddings to obtain a single tweet embedding for each user to save preprocessing time. The description embedding, tweets embedding, and labels are then used to train a Multilayer Perceptron (MLP) head for fine-tuning. The figure below shows the architecture of our model.
 
 ![Text-Based Model Architecture](/static/img/text_based_model.jpg)
 
-We implement our model using PyTorch, a popular deep learning library and use [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) for hyper-parameters tuning. The parameters we search for included hidden dimension and dropout rate of the MLP, learning rate, and weight decay value of the Adam optimizer. After obtaining the optimal parameters according to the search, we train the model on the training set and track the validation loss for early stopping. The below figure shows the training and validation loss during each training epoch. We take epoch = 17 as our final model.
+We implemented our model using PyTorch and use [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) for hyper-parameters tuning. The parameters we searced for included hidden dimension and dropout rate of the MLP, learning rate, and weight decay value of the Adam optimizer. After obtaining the optimal parameters according to the search, we trained the model on the training set and tracked the validation loss for early stopping. The figure below shows the training and validation loss during each training epoch. We took epoch = 17 as our final model.
 
 ![Text Base Loss Plot](/static/img/text_base_loss_plot2.jpg)
 
@@ -129,21 +129,21 @@ We again evaluate the performance of our model based accuracy, precision, recall
 
 ![Text Base Model Score Table](/static/img/text_base_score.jpg)
 
-We can see that the performance of our text-based method (test accuracy: 0.767)  is not as good as the feature-based method (test accuracy: 0.819). This is reasonable as text alone may contain less information compared to the rich engineered features we used in the feature-based methods. Yet, as these two methods utilize distinct information sources, we believe combining the two will boost the model's performance. Therefore, we decided to integrate both methods by stacking.
+We can see that the performance of our text-based method (test accuracy: 0.767)  is not as good as the feature-based method (test accuracy: 0.819). This is reasonable as text alone may contain less information compared to the rich engineered features we used in the feature-based methods. Nonetheless, although these two methods utilize distinct information sources, we suspected combining the two methods will boost the overall performance. Therefore, we decided to integrate both methods by stacking.
 
 **Stack Feature-Based and Text-Based Method**
 
-In this short section, we explore stacking our feature-based and text-based method.  As shown in the figure below, we first generate out-of-fold predictions on the training set using our text-based model. 
+In this short section, we explore stacking our feature-based and text-based methods.  As shown in the figure below, we first generated out-of-fold predictions on the training set using our text-based model. 
 
 ![Stack Models Architecture](/static/img/stack_oof2.jpg)
 
-Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
+Next, we added the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
 
 ![Stacked Model Score Table](/static/img/stack_score.jpg)
 
-We can see our stack model significantly outperform both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 0.853 which is a 0.04 gain over the best feature-based method! Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!
+We can see our stack model significantly outperforms both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 0.853 which is a 0.04 gain over the best feature-based method! Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!
 
-After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last feature left unexplored – the neighborhood feature! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bot!
+After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last modal left unexplored – the neighborhood modal! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bots!
 
 **Graph-Based Method**
 
