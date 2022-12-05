@@ -12,7 +12,7 @@ readtime: true
 - Hong Yuan Chang
 - [Mugdha Jadhao](https://www.linkedin.com/in/mugdha-jadhao-999b09120)
 - Ishan Nadkarni
-- Prasoon Sinha
+- [Prasoon Sinha](https://www.psinha25.github.io)
 - [Nithyashree Srinivasan](https://www.linkedin.com/in/nithyashree-srinivasan/)
 
 **Introduction**
@@ -55,7 +55,7 @@ Finally, we examined whether there are differences in the profile makeup between
 
 ![Profile Comparison](/static/img/profile-comparison.jpg)
 
-As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a twitter bot or not. Thus, we present three different models in the rest of this blog post. 
+As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a twitter bot or not. Thus, we present three different methods in the rest of this blog post for bot detection. 
 
 Current work in Twitter Bot Detection mainly falls into three categories: Feature-based methods, Text-based methods, and Graph-based methods. Insights from each of these methods are discussed in the next few sections.
 
@@ -92,7 +92,7 @@ The below heatmap shows how the features are correlated among themselves and als
 
 From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This possibly means that, more the number of followers, more a user is likely to be listed. 
 
-We next explored various binary classification models such as XGBoost Classifier, AdaBoost Classifier, LightGBM Classifier, CatBoost Classifier and RandomForest Classifier and performed hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. Table 1 summarizes the results on both the validation set and the test set. It can be seen that the Random Forest Classifier performs the best in terms of accuracy among all the other models on the test set while Catboost Classifier works best on the validation data. It was interesting to see that manually experimentation on selecting and dropping certain features had a significant impact on the model performance. These decisions were influenced by the insights from the correlation table. Overall, all models achieved about 81% accuracy
+We next explored various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers and performed hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. The table below summarizes the results on both the validation set and the test set. It can be seen that the Random Forest classifier performs the best in terms of accuracy among all the other models on the test set while Catboost classifier works best on the validation data. It was interesting to see that manually experimentation on selecting and dropping certain features had a significant impact on the model performance. These decisions were influenced by the insights from the correlation table. Overall, all models achieved about 81% accuracy
 
 ![Feature Based Importances Table 1](/static/img/feature_based_table1.png)
 
