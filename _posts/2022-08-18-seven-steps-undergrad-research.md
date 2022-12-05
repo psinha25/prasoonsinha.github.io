@@ -1,5 +1,5 @@
 ---
-title: 🧪 7 Step Process for Doing Undergraduate Research
+title: 👻 Bot or Not?
 # sub-title: Model Serving
 layout: post
 tags: [research, undergraduate]
