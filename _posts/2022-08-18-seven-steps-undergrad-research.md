@@ -8,8 +8,6 @@ social-share: false
 readtime: true
 ---
 
-**Testing**
-
 **Post Goal**
 
 I remember during undergrad visit days (damn that was around 5 years ago now) the tour guids would always say "undergraduate research is so easy to get here, there are so many undergrads doing research, we are on of the top undergrad research universities ...". Based on this alone, I thought it would be pretty easy for me to get an undergraduate research position at UW-Madison in Computer Engineering or Computer Science. Nope! Exact opposite. I'm not sure if it is just hard for CE/CS or in general at UW but what the tour guides said could not be further from the truh. I had to figure out the hard way how to get a research gig. So the goal of this post is to hopefully make it easier for you to get undergraduate research. 
