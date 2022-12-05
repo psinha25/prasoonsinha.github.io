@@ -7,9 +7,9 @@ social-share: false
 readtime: true
 ---
 
-**Group Members**
+**Group Members (Alphabetical Order)**
 - [Malvika Badrinarayan](https://www.linkedin.com/in/malvikabadri)
-- Hong Yuan Chang
+- [Hong Yuan Chang](https://hong-yc.github.io/)
 - [Mugdha Jadhao](https://www.linkedin.com/in/mugdha-jadhao-999b09120)
 - Ishan Nadkarni
 - [Prasoon Sinha](https://www.psinha25.github.io)
