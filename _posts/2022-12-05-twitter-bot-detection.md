@@ -193,10 +193,10 @@ where $W_2$ and $b_2$ are learnt. Finally, BotRCGN uses the cross-entropy loss w
 We trained the the BotRCGN model as implemented in [7] as our baseline model. In addition, we trained 5 other variants with different settings/architecture. Below is a summary of the 6 models and their differences: 
 - Model 1: Base RGCN (with RoBERTa)
 - Model 2: RGCN with BERT
-- Model 3: Model 3: RGCN without user description and 
+- Model 3: Model 3: RGCN without user description
 - Model 4: RGCN without tweets
-- Model 5: RGCN with GAT layer
-- Model 6: RGCN with two [what kind of two layers] layers
+- Model 5: RGCN with GAT layer (side note: [this blog post](https://dsgiitr.com/blogs/gat/) does an excellent job explaining what GAT layers are)
+- Model 6: RGCN with two 2RGCNConv layers
 
 Below we present the results of our 6 trained models. 
 
