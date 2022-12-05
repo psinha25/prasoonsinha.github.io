@@ -101,3 +101,33 @@ As part of feature selection, we also tried out the forward select based Sequent
 While this method can identify the important features that can help in detecting Twitter bot accounts,  the bot operators are increasingly aware of the hand-crafted features and often try to tamper with these features to elude detection. Hence, it is difficult for the feature-based methods to keep up with the competition from the evolving bots. However, this when combined with other text and graph based techniques can make the model more robust.
 
 **Text-Based Method**
+
+Text-based methods utilize natural language processing (NLP) techniques to identify Twitter bots by the user's description and tweets. With the recent advancement in computing capability, large-scale pre-trained language models have shown excellent performance on various NLP tasks, such as language translation, sentiment analysis, summarization, and question answering. Additionally, one can fine-tune the language models on specific problems using limited amounts of training data and still obtain surprisingly good results. In particular, we use RoBERTa-large as our language model from [Hugging Face](https://huggingface.co/roberta-large) and finetune it on the TwiBot-20 dataset. 
+
+RoBERTa [5] (Robustly Optimized BERT Pre-Training Approach) is a variant of BERT [6] (Bidirectional Encoder Representations from Transformers), a popular language processing model developed by researchers at Google. RoBERTa was introduced in 2019 by researchers at Facebook AI and implemented several design improvements based on BERT [6] to make it even more effective at NLP tasks. The model was pretrained with the Masked language modeling (MLM) objective, which allows it to learn an inner representation of the English language that can then be used to extract features useful for downstream tasks. We extract embedding from the user description and user tweets respectively to generate a description embedding and tweet embeddings for each user. Since a user can have up to 200 tweets in the dataset, we average up to 10 tweet embeddings to obtain a single tweet embedding for each user to save preprocessing time. The description embedding, tweets embedding along with labels are then used to train a multilayer perceptron(MLP) head for fine-tuning. The figure below shows the architecture of our model.
+
+![Text-Based Model Architecture](/static/img/text_based_model.jpg)
+
+We implement our model using PyTorch, a popular deep learning library and use [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) for hyper-parameters tuning. The parameters we search for included hidden dimension and dropout rate of the MLP, learning rate, and weight decay value of the Adam optimizer. After obtaining the optimal parameters according to the search, we train the model on the training set and track the validation loss for early stopping. The below figure shows the training and validation loss during each training epoch. We take epoch = 17 as our final model.
+
+![Text Base Loss Plot](/static/img/text_base_loss_plot.jpg)
+
+We again evaluate the performance of our model based accuracy, precision, recall, f1_score and AUC. The result is shown in the table below.
+
+![Text Base Model Score Table](/static/img/text_base_score.jpg)
+
+We can see that the performance of our text-based method (test accuracy: 0.767)  is not as good as the feature-based method (test accuracy: 0.819). This is reasonable as text alone may contain less information compared to the rich engineered features we used in the feature-based methods. Yet, as these two methods utilize distinct information sources, we believe combining the two will boost the model's performance. Therefore, we decided to integrate both methods by stacking.
+
+**Stack Feature-Based and Text-Based Method**
+
+In this short section, we explore stacking our feature-based and text-based method.  As shown in the figure below, we first generate out-of-fold predictions on the training set using our text-based model. 
+
+![Stack Models Architecture](/static/img/stack_oof.jpg)
+
+Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a catboost classifier on the new set of features. The result of this model is shown in the table below.
+
+![Stacked Model Score Table](/static/img/stack_score.jpg)
+
+We can see our stack model significantly outperform both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 0.853 which is a 0.04 gain over the best feature-based method! Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!! 
+
+After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last feature left unexplored – the neighborhood feature! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bot!! 
