@@ -10,10 +10,10 @@ readtime: true
 **Group Members**
 - [Malvika Badrinarayan](https://www.linkedin.com/in/malvikabadri)
 - Hong Yuan Chang
-- Mugdha Jadhao
+- [Mugdha Jadhao](https://www.linkedin.com/in/mugdha-jadhao-999b09120)
 - Ishan Nadkarni
 - Prasoon Sinha
-- Nithyashree Srinivasan
+- [Nithyashree Srinivasan](https://www.linkedin.com/in/nithyashree-srinivasan/)
 
 **Introduction**
 
@@ -87,7 +87,9 @@ The following features were derived from other features in the dataset:
 
 The below heatmap shows how the features are correlated among themselves and also with the label:
 
-![Feature Based Heatmap](/static/img/feature_based_heatmap.png)
+<p align="center">
+    <img src="https://github.com/psinha25/psinha25.github.io/tree/master/static/img/feature_based_heatmap.png">
+</p>
 
 From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This possibly means that, more the number of followers, more a user is likely to be listed. 
 
