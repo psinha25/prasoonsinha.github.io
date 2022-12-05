@@ -87,9 +87,8 @@ The following features were derived from other features in the dataset:
 
 The below heatmap shows how the features are correlated among themselves and also with the label:
 
-<p align="center">
-    <img src="https://github.com/psinha25/psinha25.github.io/tree/master/static/img/feature_based_heatmap.png">
-</p>
+![Feature Based Heatmap](/static/img/feature_based_heatmap.png)
+
 
 From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This possibly means that, more the number of followers, more a user is likely to be listed. 
 
