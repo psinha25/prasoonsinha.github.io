@@ -7,6 +7,14 @@ social-share: false
 readtime: true
 ---
 
+**Group Members**
+- Malvika Badrinarayan
+- Hong Yuan Chang
+- Mugdha Jadhao
+- Ishan Nadkarni
+- Prasoon Sinha
+- Nithyashree Srinivasan
+
 **Introduction**
 
 Twitter is an extremely popular social media platform, containing millions of daily active users (although given the recent controversy surrounding the recent change in management and mass amount of layoffs by CEO Elon Musk, this remains to be seen). As a free and easy-to-use platform, users engage in international news, politics, sports, memes, and a variety of other topics. However, many users do not realize they often engage with Twitter bots, which often tweet malicious links, interfere in elections [1, 2], spread fake news and propaganda [3], and attempt to steal user data. Bots are simply automated programs that attempt to co-exist with human users by imitating genuine users. Given the unquestionable importance of user safety and maintaining the integrity and respect of social media platforms, many researchers have focused their attention in creating scalable solutions for identifying Twitter Bots. In this blog post, we do the same by exploring and improving on the recent research advances in Twitter Bot detection. 
@@ -128,6 +136,80 @@ Next, we add the out-of-fold predictions from our text-based method as a new fea
 
 ![Stacked Model Score Table](/static/img/stack_score.jpg)
 
-We can see our stack model significantly outperform both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 0.853 which is a 0.04 gain over the best feature-based method! Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!! 
+We can see our stack model significantly outperform both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 0.853 which is a 0.04 gain over the best feature-based method! Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!
 
-After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last feature left unexplored – the neighborhood feature! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bot!! 
+After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last feature left unexplored – the neighborhood feature! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bot!
+
+**Graph-Based Method**
+
+While text and feature-based bot detection models have progressively shown good results in identifying Twitter Bots, they suffer from certain drawbacks. Bot detection techniques that rely on feature-based approaches are prone to adversarial attacks when bot developers try to temper with engineered features to avoid detection. While text-based methods are more robust to adversarial attacks, they fail when bot designers infuse malign content between genuine posts from genuine users. This makes them immune to detection using text-based approaches, which essentially try to capture the malicious nature of tweet content. Moreover, while text-based and feature-based methods capture the account behavior based on singular account details and attributes, they do not consider details on how users interact with each other. The user interaction or the social network encodes valuable information and can be leveraged to classify genuine human interaction vs. artificial bot interaction in the network. However, the major difficulty in using classical machine learning methods is that they work with Euclidean data, whereas graphical data is essentially non-Euclidean.
+
+This is where Geometric Deep learning models like Graph Neural Networks (GNNs) come into play and can accurately model data which lie in non-Euclidean manifolds. Therefore, recent studies have been focusing on developing graph-based Twitter bot detection methods. They have proved to be very promising at addressing the challenges facing Twitter bot detection and are exhibiting state-of-the-art performance. These methods interpret users as nodes and follow relationships as edges to leverage graph mining techniques such as relational graph convolutional networks (R-GCN) for graph-based bot detection. 
+
+GNNs are neural network architectures that directly apply on graph structures and therefore allow node level, edge level, and graph level prediction tasks. While many different GNN architectures exist, the simplest GNNs use the “message passing neural network” framework. In a simple sense, a geometric graph consists of nodes, edges, and some connectivity information, which can be cast as a GNN with the corresponding node features, edge features, and connectivity information in the form of adjacency matrix. This [blog post's illustration](https://distill.pub/2021/gnn-intro/) shows how GNNs work:
+
+1. A simple GNN uses a separate Neural Network to operate on each of the embeddings on each component (node, edge) of the graph to get back a learned embedding in the next GNN layer. 
+2. In the next step, all the information is pooled using an aggregation function which aggregates node and edge information connected to a particular node.
+3. This aggregated information is passed on to the forward layer via an activation function.
+
+![GNN Architecture Explained](/static/img/gnn-architecture.png)
+
+The development and evaluation of graph-based Twitter bot detection models is hindered by existing datasets. The Bot Repository3 provides a comprehensive collection of existing datasets. Of the listed datasets, only three provide the graph structure among Twitter users: Cresci-2015 [Cresci et al., 2015], TwiBot-20 [Feng et al., 2021c], and TwiBot-22 [Feng et al., 2022].
+
+We replicated the recent `FTG` method - BotRGCN [Feng et al., 2021b] - on the TwiBot-20 dataset where F, T, G denote Feature, Text, and Graph-based, respectively. We selected the BotRGCN model as it gives the highest accuracy among all feature, text, and graph-based methods on the TwiBot-20 dataset. Next, we explored different variants of the BotRGCN method. Finally, we explored generating embeddings using other pre-trained NLP models like RoBERTa and BERT.
+
+Bot detection with Relational Graph Convolutional Networks (BotRCGN) proposed by [7] uses the power of GNNs to capture network interactions to address detection issues that can’t be dealt with text and feature-based models, as explained above. BotRGCN uses necessary numerical and categorical user information along with pre-trained language models.
+
+![BotRCGN Picture](/static/img/botrcgn.png)
+
+Below is the problem description for our BotRCGN model:
+
+![BotRGCN Problem Statement](/static/img/botrcgn-problem.jpg)
+![BotRCGN Features](/static/img/botrcgn-features.jpg)
+
+The original user features - description, tweet, numerical and categorical features - are encoded and concatenated before they are fed to GNN. The embeddings are generated using two methods: Pretrained (i) RoBERTa and (ii) BERT transformer language models, whereas rnum and rcat are derived using one-hot encoded features fed into a fully connected autoencoder with leaky-relu activations.
+
+BotRCGN incorporates the twitter network using relational graph convolutional networks to learn user representations and network relations. The RGCN derives the hidden representation by passing the input through the first layer and then applying the activation function. $W_1$ and $b_1$ are learnt here.
+
+![Learning 1](/static/img/w1-b1-learning.jpg)
+
+The following aggregation operation combines information from the neighbors. Here, $N_r$ is the neighbor node.
+
+![Learning 2](/static/img/learning2.jpg)
+
+In the final layer, the output of the MLP is:
+
+![MLP Output](/static/img/mlp-output.jpg)
+
+where $W_2$ and $b_2$ are learnt. Finally, BotRCGN uses the cross-entropy loss with L2 regularization:
+
+![Cross Entropy with L2 Regularization](/static/img/cross-entropy-l2.jpg)
+
+We trained the the BotRCGN model as implemented in [7] as our baseline model. In addition, we trained 5 other variants with different settings/architecture. Below is a summary of the 6 models and their differences: 
+- Model 1: Base RGCN (with RoBERTa)
+- Model 2: RGCN with BERT
+- Model 3: Model 3: RGCN without user description and 
+- Model 4: RGCN without tweets
+- Model 5: RGCN with GAT layer
+- Model 6: RGCN with two [what kind of two layers] layers
+
+Below we present the results of our 6 trained models. 
+
+![Graph-Based Results](/static/img/performance-botrcgn.jpg)
+
+
+
+**References**
+
+- [1] Ashok Deb, Luca Luceri, Adam Badaway, and Emilio Ferrara. 2019. Perils and Challenges of Social Media and Election Manipulation Analysis: The 2018 US Midterms. In Companion Proceedings of The 2019 World Wide Web Conference (San Francisco, USA) (WWW ’19). Association for Computing Machinery, New York, NY, USA, 237–247. https://doi.org/10.1145/3308560.3316486 
+- [2] Emilio Ferrara. 2017. Disinformation and Social Bot Operations in the Run Up to the 2017 French Presidential Election. CoRR abs/1707.00086 (2017). arXiv:1707.00086 http://arxiv.org/abs/1707.00086
+- [3] Jonathon M Berger and Jonathon Morgan. 2015. The ISIS Twitter Census: Defining
+and describing the population of ISIS supporters on Twitter. The Brookings project
+on US relations with the Islamic world 3, 20 (2015), 4–1.
+- [4] Shangbin Feng, Herun Wan, Ningnan Wang, Jundong Li, and Minnan Luo. 2021. TwiBot-20: A Comprehensive Twitter Bot Detection Benchmark. In Proceedings of the 30th ACM International Conference on Information & Knowledge Management (CIKM '21). Association for Computing Machinery, New York, NY, USA, 4485–4494. https://doi.org/10.1145/3459637.3482019
+- [5] Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov. Roberta: A robustly optimized bert pretraining approach. arXiv preprint arXiv:1907.11692, 2019.
+https://arxiv.org/abs/1907.11692
+- [6] .Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT: Pre-training of deep bidirectional transformers for language understanding. In North American Association for Computational Linguistics (NAACL).
+https://arxiv.org/abs/1810.04805
+- [7] Feng, Shangbin, et al. "BotRGCN: Twitter bot detection with relational graph convolutional networks." Proceedings of the 2021 IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining. 2021.
+https://arxiv.org/abs/2106.13092
