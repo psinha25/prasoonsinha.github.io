@@ -1,12 +1,4 @@
 ---
-title: Bot or Not? 
-layout: post
-tags: [linux, virtual machine, operating systems]
-mathjax: true
-cover-img: /static/img/linux-vm-cover.png
-social-share: false
-readtime: true
-------
 title: 👻 Bot or Not? 
 layout: post
 tags: [twitter, machine learning, bot detection]
@@ -109,6 +101,3 @@ As part of feature selection, we also tried out the forward select based Sequent
 While this method can identify the important features that can help in detecting Twitter bot accounts,  the bot operators are increasingly aware of the hand-crafted features and often try to tamper with these features to elude detection. Hence, it is difficult for the feature-based methods to keep up with the competition from the evolving bots. However, this when combined with other text and graph based techniques can make the model more robust.
 
 **Text-Based Method**
-
-
-**Introduction**
