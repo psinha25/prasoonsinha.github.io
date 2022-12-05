@@ -4,7 +4,6 @@ title: 👻 Bot or Not?
 layout: post
 tags: [twitter, machine learning, bot detection]
 mathjax: true
-cover-img: /static/img/linux-vm-cover.png
 social-share: false
 readtime: true
 ---
@@ -42,7 +41,7 @@ Below are box plots summarizing the spread in followers, friends (following), an
 ![Summary of Friends Count](/static/img/friend-count-summary.jpg)
 ![Summary of Favorites Count](/static/img/favorites-count-summary.jpg)
 
-It’s evident that the number of followers a bot has tends to be drastically lower than the number of followers of a human. Meanwhile, bots have a much wider spread in the number of people they follow compared to humans. Hence, this suggests that *humans are capable of detecting whether accounts are bots and do not follow these accounts*. However, noticeably the spread in favorites count between humans and bots is shockingly similar, and a bot is the sample in this dataset with the highest number of favorites. Thus, although humans might be able to tell that an account is a bot (maybe because the account has several of the same tweets), *it is more difficult to tell if a tweet is from a bot account*. 
+<!-- It’s evident that the number of followers a bot has tends to be drastically lower than the number of followers of a human. Meanwhile, bots have a much wider spread in the number of people they follow compared to humans. Hence, this suggests that *humans are capable of detecting whether accounts are bots and do not follow these accounts*. However, noticeably the spread in favorites count between humans and bots is shockingly similar, and a bot is the sample in this dataset with the highest number of favorites. Thus, although humans might be able to tell that an account is a bot (maybe because the account has several of the same tweets), *it is more difficult to tell if a tweet is from a bot account*. 
 
 Finally, we examined whether there are differences in the profile makeup between bot and human accounts. In particular, we looked at whether bots tend to have empty descriptions, locations, and/or urls compared to humans. We also compared if either group clearly uses the default profile image more than others. Below are our findings: 
 
@@ -52,4 +51,30 @@ As we expected, more bot profiles than human profiles are incomplete (i.e., have
 
 Current work in Twitter Bot Detection mainly falls into three categories: Feature-based methods, Text-based methods, and Graph-based methods. Insights from each of these methods are discussed in the next few sections.
 
+**Feature-Based Method**
 
+Feature-based methods mainly focus on feature engineering with profile information and employing  conventional classification algorithms for bot detection. We used the following features from the TwiBot-20 dataset for training the models. Few of the features were used directly while few features were derived from the features present in the dataset. The following features were used directly from the dataset:
+
+- listed_count : The number of public lists that this user is a member of
+- followers_count : The number of followers this account currently has
+- statuses_count : The number of Tweets (including retweets) issued by the user
+- friends_count : The number of users this account is following (AKA their “followings”)
+- favourites_count : The number of Tweets this user has liked in the account’s lifetime
+- verified : When true, indicates that the user has a verified account.
+- default_profile: When true, indicates that the user has not altered the theme or background of their user profile
+
+The following features were derived from other features in the dataset:
+
+- profile_image_present : Derived from the profile_image_url feature which is a HTTPS-based URL pointing to the user’s profile image
+- screen_name_length : Length of the screen name feature which is a handle, or alias that this user identifies themselves with.
+- screen_name_digits : Number of digits in the screen name
+- screen_name_entropy: Entropy of the screen name feature. Entropy is a measure of the randomness of data and this is particularly useful for detecting bots
+- name_length : Length of the name feature, which is the name of the user, as they’ve defined it
+- name_digits: Number of digits in the name
+- name_entropy: Entropy of the name
+- description_length : Length of the description feature, which is the description of the profile as provided by the user
+- description_digits: Number of digits in the name
+- description_entropy: Entropy of the name
+- location_present : If there is a user-defined location for this account’s profile
+
+The below heatmap shows how the features are correlated among themselves and also with the label: -->
