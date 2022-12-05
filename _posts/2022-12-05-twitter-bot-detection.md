@@ -1,5 +1,5 @@
 ---
-title: Bot or Not? 
+title: 👻 Bot or Not? 
 # sub-title: Model Serving
 layout: post
 tags: [twitter, machine learning, bot detection]
@@ -42,5 +42,14 @@ Below are box plots summarizing the spread in followers, friends (following), an
 ![Summary of Friends Count](/static/img/friend-count-summary.jpg)
 ![Summary of Favorites Count](/static/img/favorites-count-summary.jpg)
 
+It’s evident that the number of followers a bot has tends to be drastically lower than the number of followers of a human. Meanwhile, bots have a much wider spread in the number of people they follow compared to humans. Hence, this suggests that *humans are capable of detecting whether accounts are bots and do not follow these accounts*. However, noticeably the spread in favorites count between humans and bots is shockingly similar, and a bot is the sample in this dataset with the highest number of favorites. Thus, although humans might be able to tell that an account is a bot (maybe because the account has several of the same tweets), *it is more difficult to tell if a tweet is from a bot account*. 
+
+Finally, we examined whether there are differences in the profile makeup between bot and human accounts. In particular, we looked at whether bots tend to have empty descriptions, locations, and/or urls compared to humans. We also compared if either group clearly uses the default profile image more than others. Below are our findings: 
+
+![Profile Comparison](/static/img/profile-comparison.jpg)
+
+As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a twitter bot or not. Thus, we present three different models in the rest of this blog post. 
+
+Current work in Twitter Bot Detection mainly falls into three categories: Feature-based methods, Text-based methods, and Graph-based methods. Insights from each of these methods are discussed in the next few sections.
 
 
