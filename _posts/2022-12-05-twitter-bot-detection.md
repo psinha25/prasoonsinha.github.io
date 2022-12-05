@@ -17,11 +17,11 @@ readtime: true
 
 **Introduction**
 
-Twitter is an extremely popular social media platform, containing millions of daily active users (although given the recent controversy surrounding the recent change in management and mass amount of layoffs by CEO Elon Musk, this remains to be seen). As a free and easy-to-use platform, users engage in international news, politics, sports, memes, and a variety of other topics. However, many users do not realize they often engage with Twitter bots, which often tweet malicious links, interfere in elections [1, 2], spread fake news and propaganda [3], and attempt to steal user data. Bots are simply automated programs that attempt to co-exist with human users by imitating genuine users. Given the unquestionable importance of user safety and maintaining the integrity and respect of social media platforms, many researchers have focused their attention in creating scalable solutions for identifying Twitter Bots. In this blog post, we do the same by exploring and improving on the recent research advances in Twitter Bot detection. 
+Twitter is an extremely popular social media platform, containing millions of daily active users (although given the recent controversy surrounding the recent change in management and mass amount of layoffs by CEO Elon Musk, this remains to be seen). As a free and easy-to-use platform, users engage in international news, politics, sports, memes, and a variety of other topics. However, many users do not realize they often engage with Twitter Bots, which often tweet malicious links, interfere in elections [1, 2], spread fake news and propaganda [3], and attempt to steal user data. Bots are simply automated programs that attempt to co-exist with human users by imitating genuine users. Given the unquestionable importance of user safety and maintaining the integrity and respect of social media platforms, many researchers have focused their attention in creating scalable solutions for identifying Twitter Bots. In this blog post, we do the same by exploring and improving on the recent research advances in Twitter Bot detection. 
 
 **TwiBot-20 Data Set**
 	
-We use a subset of the TwiBot-20 Data Set [4], a comprehensive twitter bot detection benchmark. Presented in the International Conference of Information, Knowledge, and Management 2020, this is the first publicly available data set of Twitter users that includes follower relationships. The authors of this data set leveraged the Twitter API to collect three modals of user information: semantic, property, and neighborhood information. To create a diverse user data set (unlike many of its predecessors), a breath-first algorithm was used to select users from the Twittersphere (graph of Twitter users, where nodes are users and edge represents a connection between two users). Below are some of the unique features this dataset contains relative to the three modals collected: 
+We use a subset of the TwiBot-20 Data Set [4], a comprehensive Twitter Bot detection benchmark. Presented in the International Conference of Information, Knowledge, and Management 2020, this is the first publicly available data set of Twitter users that includes follower relationships. The authors of this data set leveraged the Twitter API to collect three modals of user information: semantic, property, and neighborhood information. To create a diverse user data set (unlike many of its predecessors), a breath-first algorithm was used to select users from the Twittersphere (graph of Twitter users, where nodes are users and edge represents a connection between two users). Below are some of the unique features this dataset contains relative to the three modals collected: 
 - Semantic: user tweets, retweets, and replies
 - Property: follower count, following count (friend count), verification status
 - Neighborhood: users followed and following (in the form of Twitter ID numbers)
@@ -55,7 +55,7 @@ Finally, we examined whether there are differences in the profile makeup between
 
 ![Profile Comparison](/static/img/profile-comparison.jpg)
 
-As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a twitter bot or not. Thus, we present three different methods in the rest of this blog post for bot detection. 
+As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a Twitter Bot or not. Thus, we present three different methods in the rest of this blog post for bot detection. 
 
 Current work in Twitter Bot Detection mainly falls into three categories: Feature-based methods, Text-based methods, and Graph-based methods. Insights from each of these methods are discussed in the next few sections.
 
@@ -149,7 +149,7 @@ After exploring the property and semantic features of the TwiBot-20 dataset by f
 
 While text and feature-based bot detection models have progressively shown good results in identifying Twitter Bots, they suffer from certain drawbacks. Bot detection techniques that rely on feature-based approaches are prone to adversarial attacks when bot developers try to temper with engineered features to avoid detection. While text-based methods are more robust to adversarial attacks, they fail when bot designers infuse malign content between genuine posts from genuine users. This makes them immune to detection using text-based approaches, which essentially try to capture the malicious nature of tweet content. Moreover, while text-based and feature-based methods capture the account behavior based on singular account details and attributes, they do not consider details on how users interact with each other. The user interaction or the social network encodes valuable information and can be leveraged to classify genuine human interaction vs. artificial bot interaction in the network. However, the major difficulty in using classical machine learning methods is that they work with Euclidean data, whereas graphical data is essentially non-Euclidean.
 
-This is where Geometric Deep learning models like Graph Neural Networks (GNNs) come into play and can accurately model data which lie in non-Euclidean manifolds. Therefore, recent studies have been focusing on developing graph-based Twitter bot detection methods. They have proved to be very promising at addressing the challenges facing Twitter bot detection and are exhibiting state-of-the-art performance. These methods interpret users as nodes and follow relationships as edges to leverage graph mining techniques such as relational graph convolutional networks (R-GCN) for graph-based bot detection. 
+This is where Geometric Deep learning models like Graph Neural Networks (GNNs) come into play and can accurately model data which lie in non-Euclidean manifolds. Therefore, recent studies have been focusing on developing graph-based Twitter Bot detection methods. They have proved to be very promising at addressing the challenges facing Twitter Bot detection and are exhibiting state-of-the-art performance. These methods interpret users as nodes and follow relationships as edges to leverage graph mining techniques such as relational graph convolutional networks (R-GCN) for graph-based bot detection. 
 
 GNNs are neural network architectures that directly apply on graph structures and therefore allow node level, edge level, and graph level prediction tasks. While many different GNN architectures exist, the simplest GNNs use the “message passing neural network” framework. In a simple sense, a geometric graph consists of nodes, edges, and some connectivity information, which can be cast as a GNN with the corresponding node features, edge features, and connectivity information in the form of adjacency matrix. This [blog post's illustration](https://distill.pub/2021/gnn-intro/) shows how GNNs work:
 
@@ -159,7 +159,7 @@ GNNs are neural network architectures that directly apply on graph structures an
 
 ![GNN Architecture Explained](/static/img/gnn-architecture.png)
 
-The development and evaluation of graph-based Twitter bot detection models is hindered by existing datasets. The Bot Repository3 provides a comprehensive collection of existing datasets. Of the listed datasets, only three provide the graph structure among Twitter users: Cresci-2015 [Cresci et al., 2015], TwiBot-20 [Feng et al., 2021c], and TwiBot-22 [Feng et al., 2022].
+The development and evaluation of graph-based Twitter Bot detection models is hindered by existing datasets. The Bot Repository3 provides a comprehensive collection of existing datasets. Of the listed datasets, only three provide the graph structure among Twitter users: Cresci-2015 [Cresci et al., 2015], TwiBot-20 [Feng et al., 2021c], and TwiBot-22 [Feng et al., 2022].
 
 We replicated the recent `FTG` method - BotRGCN [Feng et al., 2021b] - on the TwiBot-20 dataset where F, T, G denote Feature, Text, and Graph-based, respectively. We selected the BotRGCN model as it gives the highest accuracy among all feature, text, and graph-based methods on the TwiBot-20 dataset. Next, we explored different variants of the BotRGCN method. Finally, we explored generating embeddings using other pre-trained NLP models like RoBERTa and BERT.
 
@@ -202,7 +202,9 @@ Below we present the results of our 6 trained models.
 
 ![Graph-Based Results](/static/img/performance-botrcgn.jpg)
 
+**GitHub Artifact**
 
+[Bot or Not?](https://github.com/psinha25/bot-or-not)
 
 **References**
 
