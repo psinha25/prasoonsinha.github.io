@@ -130,7 +130,7 @@ We can see that the performance of our text-based method (test accuracy: 0.767) 
 
 In this short section, we explore stacking our feature-based and text-based method.  As shown in the figure below, we first generate out-of-fold predictions on the training set using our text-based model. 
 
-![Stack Models Architecture](/static/img/stack_oof.jpg)
+![Stack Models Architecture](/static/img/stack_oof2.jpg)
 
 Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a catboost classifier on the new set of features. The result of this model is shown in the table below.
 
