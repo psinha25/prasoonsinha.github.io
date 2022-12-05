@@ -1,5 +1,5 @@
 ---
-title: 👻 Bot or Not? 
+title: Bot or Not? 
 layout: post
 tags: [linux, virtual machine, operating systems]
 mathjax: true
