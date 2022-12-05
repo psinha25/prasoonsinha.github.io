@@ -56,9 +56,9 @@ Feature-based methods mainly focus on feature engineering with profile informati
 
 - `listed_count`: The number of public lists that this user is a member of
 - `followers_count`: The number of followers this account currently has
-- `statuses_count`: The number of Tweets (including retweets) issued by the user
+- `statuses_count`: The number of tweets (including retweets) issued by the user
 - `friends_count`: The number of users this account is following (AKA their “followings”)
-- `favourites_count`: The number of Tweets this user has liked in the account’s lifetime
+- `favorites_count`: The number of tweets this user has liked in the account’s lifetime
 - `verified`: When true, indicates that the user has a verified account.
 - `default_profile`: When true, indicates that the user has not altered the theme or background of their user profile
 
@@ -79,3 +79,25 @@ The following features were derived from other features in the dataset:
 The below heatmap shows how the features are correlated among themselves and also with the label:
 
 ![Feature Based Heatmap](/static/img/feature_based_heatmap.png)
+
+From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This possibly means that, more the number of followers, more a user is likely to be listed. 
+
+We next explored various binary classification models such as XGBoost Classifier, AdaBoost Classifier, LightGBM Classifier, CatBoost Classifier and RandomForest Classifier and performed hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. Table 1 summarizes the results on both the validation set and the test set. It can be seen that the Random Forest Classifier performs the best in terms of accuracy among all the other models on the test set while Catboost Classifier works best on the validation data. It was interesting to see that manually experimentation on selecting and dropping certain features had a significant impact on the model performance. These decisions were influenced by the insights from the correlation table. Overall, all models achieved about 81% accuracy
+
+![Feature Based Importances Table 1](/static/img/feature_based_table1.png)
+
+The feature importances as obtained from training the xgboost model is as follows:
+
+![Feature Based Importances](/static/img/feature_based_importances.png)
+
+The 4 most important features that the model trains on are `description_entropy`, `tweet count`, `followers`, and `friends`. 
+
+As part of feature selection, we also tried out the forward select based SequentialFeatureSelector (SFS). This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. Catboost classifier was used as a base model for SFS. This run selected 11 features, namely, `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, `default_profile`, as the final features to be used for modeling. Using these features, we re-trained the same classifiers that we used before. It gave improvements in validation accuracy and, but it could not give better results that the best model from the previous experiment of 81.9%.
+
+![Feature Based Importances Table 2](/static/img/feature_based_table2.png)
+
+*Disadvantages of feature-based method:*
+While this method can identify the important features that can help in detecting Twitter bot accounts,  the bot operators are increasingly aware of the hand-crafted features and often try to tamper with these features to elude detection. Hence, it is difficult for the feature-based methods to keep up with the competition from the evolving bots. However, this when combined with other text and graph based techniques can make the model more robust.
+
+**Text-Based Method**
+
