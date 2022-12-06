@@ -85,7 +85,7 @@ The following features are derived from other features in the dataset:
 
 The below heatmap shows how the features are correlated among themselves and also with the label:
 
-![Feature Based Heatmap](/static/img/m_feature_based_heatmap.jpg)
+![Feature Based Heatmap](/static/img/m_feature_based_heatmap.png)
 
 
 From the correlation map, we find that there is a strong negative correlation between the label and `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a strong positive correlation between the followers and the listed count. This suggests that an account with a high number of followers is more likely to be present in other users' lists. 
