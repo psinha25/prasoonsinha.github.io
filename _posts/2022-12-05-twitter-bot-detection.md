@@ -53,7 +53,7 @@ It is evident that the number of followers a bot has tends to be drastically low
 
 Finally, we examine whether there are differences in the profile makeup between bot and human accounts. In particular, we look at whether bots tend to have empty descriptions, locations, and/or urls compared to humans. We also compare if either group clearly uses the default profile image more than others. Below are our findings: 
 
-![Profile Comparison](/static/img/profile-comparison.jpg)
+![Profile Comparison](/static/img/m_profile-comparison.jpg)
 
 As expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a Twitter Bot or not. Thus, we present three different methods with insights in the rest of this blog for bot detection: feature-based, text-based, and graph-based methods.
 
@@ -127,7 +127,7 @@ We implement our model using PyTroch and [Ray Tune](https://docs.ray.io/en/lates
 
 We again evaluate the performance of our model based on accuracy, precision, recall, f1_score and AUC. The result is shown in the table below.
 
-![Text Base Model Score Table](/static/img/text_base_score.jpg)
+![Text Base Model Score Table](/static/img/m_text_base_score.jpg)
 
 We can see that the performance of our text-based method (test accuracy: 0.767) is not as good as the feature-based method (test accuracy: 0.819). This is reasonable as text alone may contain less information compared to the rich engineered features we use in the feature-based methods. Although these two methods utilize distinct information sources, we suspected combining the two methods would boost the overall performance. Therefore, we next integrate both methods by stacking.
 
@@ -139,7 +139,7 @@ In this section, we explore stacking our feature-based and text-based methods.  
 
 Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
 
-![Stacked Model Score Table](/static/img/stack_score.jpg)
+![Stacked Model Score Table](/static/img/m_stack_score.jpg)
 
 We can see our stack model significantly outperforms both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 85.3% which is a 4% gain over the best feature-based method! This is the highest accuracy reported so far for TwiBot20 using both feature and text input [8]. Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!
 
