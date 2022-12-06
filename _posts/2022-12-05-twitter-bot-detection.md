@@ -198,6 +198,8 @@ We train the the BotRGCN model as implemented in [7] as our baseline model. In a
 - Model 5: RGCN with GAT layer (side note: [this blog post](https://dsgiitr.com/blogs/gat/) does an excellent job explaining what GAT layers are)
 - Model 6: RGCN with 2 RGCN conv layers
 
+Models 1 and 2 use different language models, namely RoBERT and BERT, to understand the influence text feature embeddings have on the network. Moreover, we train an RGCN model without user description (model 3) and one without user tweets (model 4) to evaluate how important these features are in prediction accuracy. Finally, our last two models each use a different architecture. Model 5 uses a Graph Attention Network (GAT) layer, which differs from GCN’s in the way neighborhood information is aggregated. GAT introduces an attention mechanism in contrast to the normalized convolution operation that is used by GCNs. This is known to improve generalizability since the aggregation operation becomes less structure dependent. Model 6 uses the base RGCN model with two RGCN convolution layers. 
+
 Below we present a side-by-side comparison of our 6 models with the various performance metrics we obtained. We also include the change in trainnig loss, training accuracy, and validation accuracy over epochs. Finally, we present the raw performance scores for our 6 models.
 
 ![Graph-Based Plots](/static/img/performance-botrcgn.jpg)
@@ -205,7 +207,7 @@ Below we present a side-by-side comparison of our 6 models with the various perf
 
 **Conclusion**
 
-We explored multiple approaches for Twitter bot detection - feature-based, text-based, stacking of feature and text-based, and graph-based methods. We get similar accuracies of 85.3% and 85.8% for the stacking solution and graph-based method, respectively. The reason behind similar accuracies is that the implemented graph-based model is not using our feature engineering that is used in the stacking solution to generate embeddings. The insight behind stacking solution working this well is that neural network models do not perform as well as tree-based methods on tabular data. But the fact that the graph-based model is still performing a little bit better than the stacking solution shows the significance of neighborhood information in Twitter bot detection. Therefore, graph-based methods are definitely promising future direction for Twitter bot detection!
+In this blog post, we explore multiple approaches for Twitter bot detection - feature-based, text-based, stacking of feature and text-based, and graph-based methods. Overall, we obtain similar accuracies of 85.3% and 85.8% for the stacking solution and graph-based method, respectively. The reason behind similar accuracies is that the implemented graph-based model is not using our feature engineering that is used in the stacking solution to generate embeddings. The insight behind stacking solution working this well is that neural network models do not perform as well as tree-based methods on tabular data. Nonetheless, the fact that the graph-based model is still performing a little bit better than the stacking solution shows the significance of neighborhood information in Twitter bot detection. Therefore, graph-based methods are definitely promising future direction for Twitter bot detection!
 
 **GitHub Artifact**
 
@@ -225,3 +227,4 @@ https://arxiv.org/abs/1907.11692
 https://arxiv.org/abs/1810.04805
 - [7] Feng, Shangbin, et al. "BotRGCN: Twitter bot detection with relational graph convolutional networks." Proceedings of the 2021 IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining. 2021.
 https://arxiv.org/abs/2106.13092
+- [8] Feng, Shangbin and Tan, Zhaoxuan and Wan, Herun and Wang, Ningnan and Chen, Zilong and Zhang, Binchi and Zheng, Qinghua and Zhang, Wenqian and Lei, Zhenyu and Yang, Shujie and Feng, Xinshun and Zhang, Qingyue and Wang, Hongrui and Liu, Yuhan and Bai, Yuyang and Wang, Heng and Cai, Zijian and Wang, Yanbo and Zheng, Lijing and Ma, Zihan and Li, Jundong and Luo, Minnan. 2022. TwiBot-22: Towards Graph-Based Twitter Bot Detection.In Proceedings of the Conference on Neural Information Processing Systems (NeurIPS). https://arxiv.org/abs/2206.04564
