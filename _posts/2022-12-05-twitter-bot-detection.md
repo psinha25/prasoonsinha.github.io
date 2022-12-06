@@ -85,7 +85,7 @@ The following features are derived from other features in the dataset:
 
 The below heatmap shows how the features are correlated among themselves and also with the label:
 
-![Feature Based Heatmap](/static/img/feature_based_heatmap.png)
+![Feature Based Heatmap](/static/img/m_feature_based_heatmap.jpg)
 
 
 From the correlation map, we find that there is a strong negative correlation between the label and `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a strong positive correlation between the followers and the listed count. This suggests that an account with a high number of followers is more likely to be present in other users' lists. 
@@ -98,7 +98,7 @@ We see that the Random Forest classifier performs the best in terms of test set 
 
 The feature importances as obtained from training the XGBoost model is as follows:
 
-![Feature Based Importances](/static/img/feature_based_importances.png)
+![Feature Based Importances](/static/img/m_feature_based_importances.jpg)
 
 The 4 most important features that the model trains on are `description_entropy`, `tweet count`, `followers`, and `friends`. 
 
