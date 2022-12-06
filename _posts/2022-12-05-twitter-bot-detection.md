@@ -135,7 +135,7 @@ We can see that the performance of our text-based method (test accuracy: 0.767) 
 
 In this section, we explore stacking our feature-based and text-based methods.  As shown in the figure below, we first generate out-of-fold predictions on the training set using our text-based model. 
 
-![Stack Models Architecture](/static/img/stack_oof.jpg)
+![Stack Models Architecture](/static/img/m_stack_oof.jpg)
 
 Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
 
@@ -172,7 +172,7 @@ Below is the problem description for our BotRGCN model:
 ![BotRGCN Problem Statement](/static/img/botrcgn-problem.jpg)
 ![BotRGCN Features](/static/img/botrcgn-features.jpg)
 
-*Feature Embeddings*: The original user features - description, tweet, numerical and categorical features - are encoded and concatenated before they are fed to GNN. The embeddings are generated using two methods: Pretrained (i) RoBERTa and (ii) BERT transformer language models, whereas rnum and rcat are derived using one-hot encoded features fed into a fully connected autoencoder with leaky-relu activations.
+*Feature Embeddings*: The original user features - description, tweet, numerical and categorical features - are encoded and concatenated before they are fed to GNN. The embeddings are generated using two methods: pretrained (i) RoBERTa and (ii) BERT transformer language models, whereas rnum and rcat are derived using one-hot encoded features fed into a fully connected autoencoder with leaky-relu activations.
 
 *Architecture*: BotRGCN incorporates the twitter network using relational graph convolutional networks to learn user representations and network relations. The RGCN derives the hidden representation by passing the input through the first layer and then applying the activation function. $W_1$ and $b_1$ are learnt here.
 
@@ -200,19 +200,19 @@ We train the the BotRGCN model as implemented in [7] as our baseline model. In a
 
 Models 1 and 2 use different language models, namely RoBERT and BERT, to understand the influence text feature embeddings have on the network. Moreover, we train an RGCN model without user description (model 3) and one without user tweets (model 4) to evaluate how important these features are in prediction accuracy. Finally, our last two models each use a different architecture. Model 5 uses a Graph Attention Network (GAT) layer, which differs from GCN’s in the way neighborhood information is aggregated. GAT introduces an attention mechanism in contrast to the normalized convolution operation that is used by GCNs. This is known to improve generalizability since the aggregation operation becomes less structure dependent. Model 6 uses the base RGCN model with two RGCN convolution layers. 
 
-Below we present a side-by-side comparison of our 6 models with the various performance metrics we obtained. We also include the change in trainnig loss, training accuracy, and validation accuracy over epochs. Finally, we present the raw performance scores for our 6 models.
+Below we present a side-by-side comparison of our 6 models with the various performance metrics we obtained. We also include the change in training loss, training accuracy, and validation accuracy over epochs. Finally, we present the raw performance scores for our 6 models.
 
 ![Graph-Based Plots](/static/img/performance-botrcgn.jpg)
-![Graph-Based Table](/static/img/graph-based-table.jpg)
+![Graph-Based Table](/static/img/m_graph_result.jpg)
 
-We see that BotRGCN Model 1 achieves accuracy, f1 score, and MCC of 85.8%, 0.8735, and 0.7145, respectively. Model 2 shows a drop in accuracy which is expected since RoBERT is optimized (uses dynamic masking, more data points, large batch size etc) and hence a better variant of BERT. Model 3 and 4 justify the importance of multi-modal user information which is evident by the fact that the accuracy drops when either the tweet or user description features are not included while training. The use of a GAT layer in model 5 shows similar results to the baseline BotRGCN, suggesting that the extra complexity of using a GAT layer is unnecessary. Finally, the use of two RGCN layers in model 6 is not any better. 
+We see that BotRGCN Model 1 achieves accuracy, f1 score, and MCC of 85.8%, 0.8735, and 0.7145, respectively. Model 2 shows a drop in accuracy which is expected since RoBERT is optimized (uses dynamic masking, more data points, large batch size) and hence a better variant of BERT. Model 3 and 4 justify the importance of multi-modal user information which is evident by the fact that the accuracy drops when either the tweet or user description features are not included while training. The use of a GAT layer in model 5 shows similar results to the baseline BotRGCN, suggesting that the extra complexity of using a GAT layer is unnecessary. Finally, the use of two RGCN layers in model 6 is not any better. 
 
 Overall, we see that BotRGCN outperforms the text-based and feature-based models. This shows the significance of inculcating neighborhood connectivity information for Twitter Bot detection and exploring graph-based methods and datasets in the future. 
 
 
 **Conclusion**
 
-In this blog post, we explore multiple approaches for Twitter bot detection - feature-based, text-based, stacking of feature and text-based, and graph-based methods. Overall, we obtain similar accuracies of 85.3% and 85.8% for the stacking solution and graph-based method, respectively. The reason behind similar accuracies is that the implemented graph-based model is not using our feature engineering that is used in the stacking solution to generate embeddings. The insight behind stacking solution working this well is that neural network models do not perform as well as tree-based methods on tabular data. Nonetheless, the fact that the graph-based model is still performing a little bit better than the stacking solution shows the significance of neighborhood information in Twitter bot detection. Therefore, graph-based methods are definitely promising future direction for Twitter bot detection!
+In this blog post, we explore multiple approaches for Twitter Bot detection - feature-based, text-based, stacking of feature and text-based, and graph-based methods. Overall, we obtain similar accuracies of 85.3% and 85.8% for the stacking solution and graph-based method, respectively. The reason behind similar accuracies is that the implemented graph-based model is not using our feature engineering that is used in the stacking solution to generate embeddings. The insight behind stacking solution working this well is that neural network models do not perform as well as tree-based methods on tabular data. Nonetheless, the fact that the graph-based model is still performing a little bit better than the stacking solution shows the significance of neighborhood information in Twitter Bot detection. Therefore, graph-based methods are definitely promising future direction for Twitter Bot detection!
 
 **GitHub Artifact**
 
