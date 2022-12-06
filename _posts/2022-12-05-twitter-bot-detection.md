@@ -135,7 +135,7 @@ We can see that the performance of our text-based method (test accuracy: 0.767) 
 
 In this section, we explore stacking our feature-based and text-based methods.  As shown in the figure below, we first generate out-of-fold predictions on the training set using our text-based model. 
 
-![Stack Models Architecture](/static/img/stack_oof2.jpg)
+![Stack Models Architecture](/static/img/stack_oof.jpg)
 
 Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
 
@@ -204,6 +204,11 @@ Below we present a side-by-side comparison of our 6 models with the various perf
 
 ![Graph-Based Plots](/static/img/performance-botrcgn.jpg)
 ![Graph-Based Table](/static/img/graph-based-table.jpg)
+
+We see that BotRGCN Model 1 achieves accuracy, f1 score, and MCC of 85.8%, 0.8735, and 0.7145, respectively. Model 2 shows a drop in accuracy which is expected since RoBERT is optimized (uses dynamic masking, more data points, large batch size etc) and hence a better variant of BERT. Model 3 and 4 justify the importance of multi-modal user information which is evident by the fact that the accuracy drops when either the tweet or user description features are not included while training. The use of a GAT layer in model 5 shows similar results to the baseline BotRGCN, suggesting that the extra complexity of using a GAT layer is unnecessary. Finally, the use of two RGCN layers in model 6 is not any better. 
+
+Overall, we see that BotRGCN outperforms the text-based and feature-based models. This shows the significance of inculcating neighborhood connectivity information for Twitter Bot detection and exploring graph-based methods and datasets in the future. 
+
 
 **Conclusion**
 
