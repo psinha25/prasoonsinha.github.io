@@ -40,7 +40,7 @@ Containing over 11.8K samples in our data set, about 56% of the samples are bots
 ![Number of Tweets Breakdown](/static/img/tweets-breakdown.jpg)
 ![Number of Retweets Breakdown](/static/img/retweets-breakdown.jpg)
 
-There is a noticeable difference in the spread of the number of tweets and retweets between bots and users. We notice that most humans tend to have between 185-205 tweets, with outliers spanning all the way down to 0 tweets. Bots on the other hand have a wider range between 143 and 200 tweets. Hence, to answer question 1: *although the spread of tweets and retweets is larger for bots than humans, there is not a noticeable difference in the amount of tweeting between the two*. 
+There is a noticeable difference in the spread of the number of tweets and retweets between bots and users. We notice that most humans tend to have between 185-205 tweets, with outliers spanning all the way down to 0 tweets. Bots on the other hand have a wider range between 143-200 tweets. Hence, to answer question 1: *although the spread of tweets and retweets is larger for bots than humans, there is not a noticeable difference in the amount of tweeting between the two*. 
 
 Below are box plots summarizing the spread in followers, friends (following), and favorites (total number of likes the user’s tweets/retweets have received). 
 
@@ -49,32 +49,32 @@ Below are box plots summarizing the spread in followers, friends (following), an
 ![Summary of Friends Count](/static/img/friend-count-summary.jpg)
 ![Summary of Favorites Count](/static/img/favorites-count-summary.jpg)
 
-It’s evident that the number of followers a bot has tends to be drastically lower than the number of followers of a human. Meanwhile, bots have a much wider spread in the number of people they follow compared to humans. Hence, this suggests that *humans are capable of detecting whether accounts are bots and do not follow these accounts*. However, noticeably the spread in favorites count between humans and bots is shockingly similar, and a bot is the sample in this dataset with the highest number of favorites. Thus, although humans might be able to tell that an account is a bot (maybe because the account has several of the same tweets), *it is more difficult to tell if a tweet is from a bot account*. 
+It is evident that the number of followers a bot has tends to be drastically lower than the number of followers of a human. Meanwhile, bots have a much wider spread in the number of people they follow compared to humans. Hence, this suggests that *humans are capable of detecting whether accounts are bots and do not follow these accounts*. However, noticeably the spread in favorites count between humans and bots is shockingly similar, and the sample point with the highest number of favorites in this dataset is a bot. Thus, although humans might be able to tell that an account is a bot (maybe because the account has several of the same tweets), *it is more difficult to tell if a tweet is from a bot account*. 
 
-Finally, we examined whether there are differences in the profile makeup between bot and human accounts. In particular, we looked at whether bots tend to have empty descriptions, locations, and/or urls compared to humans. We also compared if either group clearly uses the default profile image more than others. Below are our findings: 
+Finally, we examine whether there are differences in the profile makeup between bot and human accounts. In particular, we look at whether bots tend to have empty descriptions, locations, and/or urls compared to humans. We also compare if either group clearly uses the default profile image more than others. Below are our findings: 
 
 ![Profile Comparison](/static/img/profile-comparison.jpg)
 
-As we expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a Twitter Bot or not. Thus, we present three different methods with insights in the rest of this blog post for bot detection: feature-based methods, text-based methods, and braph-based methods.
+As expected, more bot profiles than human profiles are incomplete (i.e., have empty descriptions, locations, urls, or use the default profile image). *However, the differences between the two types of Twitter users is minimal across all the categories*. This suggests that bot algorithms are quite sophisticated today and motivates the need for more advanced techniques than simple heuristics to detect whether an account is a Twitter Bot or not. Thus, we present three different methods with insights in the rest of this blog for bot detection: feature-based, text-based, and graph-based methods.
 
 **Feature-Based Method**
 
-Feature-based methods mainly focus on feature engineering with profile information and employing  conventional classification algorithms for bot detection. We used the following features from the TwiBot-20 dataset for training the models. Few of the features were used directly while few features were derived from the features present in the dataset. The following features were used directly from the dataset:
+Feature-based methods mainly focus on feature engineering with profile information and employing  conventional classification algorithms for bot detection. To train the models, we use few features directly from the user profile information. The remaining features are derived from other features in the dataset. The following features are used directly from the dataset:
 
-- `listed_count`: The number of public lists that this user is a member of
-- `followers_count`: The number of followers this account currently has
+- `listed_count`: The number of public lists that the user is a member of
+- `followers_count`: The number of followers the account currently has
 - `statuses_count`: The number of tweets (including retweets) issued by the user
-- `friends_count`: The number of users this account is following (i.e., their “followings”)
-- `favorites_count`: The number of tweets this user has liked in the account’s lifetime
-- `verified`: When true, indicates that the user has a verified account.
-- `default_profile`: When true, indicates that the user has not altered the theme or background of their user profile
+- `friends_count`: The number of users the account is following (i.e., their “followings”)
+- `favorites_count`: The number of tweets the user has liked in the account’s lifetime
+- `verified`: Indicates whether the user has a verified account or not
+- `default_profile`: Indicates whether the user has retained the them or background of their user profile or not
 
-The following features were derived from other features in the dataset:
+The following features are derived from other features in the dataset:
 
 - `profile_image_present`: Derived from the `profile_image_url` feature which is a HTTPS-based URL pointing to the user’s profile image
 - `screen_name_length`: Length of the screen name feature which is a handle, or alias that this user identifies themselves with.
 - `screen_name_digits`: Number of digits in the screen name
-- `screen_name_entropy`: Entropy of the screen name feature. Entropy is a measure of the randomness of the data, which is particularly useful for detecting bots
+- `screen_name_entropy`: Entropy of the screen name feature (entropy is a measure of the randomness of the data, which is particularly useful for detecting bots)
 - `name_length`: Length of the name feature, which is the name of the user, as they’ve defined it
 - `name_digit`: Number of digits in the name
 - `name_entropy`: Entropy of the name
@@ -88,9 +88,9 @@ The below heatmap shows how the features are correlated among themselves and als
 ![Feature Based Heatmap](/static/img/feature_based_heatmap.png)
 
 
-From the correlation map, we find that the label is highly negatively correlated with the `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a high positive correlation between the followers and the listed count. This suggests that an account with a high number of followers is more likely to be listed. 
+From the correlation map, we find that there is a strong negative correlation between the label and `verified` information. This makes sense as verified profiles are likely to be humans rather than bots. There also exists a strong positive correlation between the followers and the listed count. This suggests that an account with a high number of followers is more likely to be present in other users' lists. 
 
-We next explored various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers by performing hyperparameter tuning to improve the respective base models. The model performance was evaluated in terms of accuracy, precision, recall, f1_score and AUC. The table below summarizes the results on both the validation set and the test set.
+We next explore various binary classification models such as XGBoost, AdaBoost, LightGBM, CatBoost, and RandomForest classifiers by performing hyperparameter tuning to improve the respective base models. The model performance (in terms of accuracy, precision, recall, f1_score, and AUC) for both the validation and test set is summarized in the table below:
 
 ![Feature Based Importances Table 1](/static/img/feature_based_table1.png)
 
@@ -102,48 +102,48 @@ The feature importances as obtained from training the XGBoost model is as follow
 
 The 4 most important features that the model trains on are `description_entropy`, `tweet count`, `followers`, and `friends`. 
 
-To further explore feature engineering in feature-based methods, we used the SequentialFeatureSelector (SFS) forward selection algorithm to select features for training. This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. CatBoost was used as a base model for SFS. This run selected 11 features as the final features to be used for modeling: `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, `default_profile`. With these 11 features, we re-trained the same classifiers that we used before. The table below shows our results. 
+To further explore feature engineering in feature-based methods, we use the SequentialFeatureSelector (SFS) forward selection algorithm to select features for training. This technique adds features to form a feature subset in a greedy fashion. At each stage, this estimator chooses the best feature to add based on the cross-validation score of an estimator. CatBoost is used as a base model for SFS. This run selects 11 features as the final features to be used for modeling: `listed`, `followers`, `tweets`, `friends`, `verified`, `screen_name_digits`, `location_present`, `name_entropy`, `screen_name_entropy`, `desc_entropy`, and `default_profile`. With these 11 features, we re-train the same classifiers that used previously. The table below shows our results. 
 
 ![Feature Based Importances Table 2](/static/img/feature_based_table2.png)
 
-Overall, we notice that this approach improved validation accuracy, but did not improve the test set accuracy. That is, it could not achieve an accuracy higher than 81.9%, the highest accuracy achieved in the previous experiment. 
+Overall, we notice that this approach improves validation accuracy, but does not improve the test set accuracy. That is, it does not achieve an accuracy higher than 81.9%, the highest accuracy achieved in the previous experiment. 
 
 *Disadvantages of feature-based method:*
 While this method can identify the important features that can help in detecting Twitter bot accounts,  the bot operators are increasingly aware of the hand-crafted features and often try to tamper with these features to elude detection. Hence, it is difficult for the feature-based methods to keep up with the competition from the evolving bots. However, this when combined with other text and graph based techniques can make the model more robust.
 
 **Text-Based Method**
 
-Text-based methods utilize natural language processing (NLP) techniques to identify bots from a user's description and tweets. With the recent advancement in computing capability, large-scale pre-trained language models have shown excellent performance on various NLP tasks, such as language translation, sentiment analysis, summarization, and question answering. Additionally, one can fine-tune the language models on specific problems using limited amounts of training data and still obtain surprisingly good results. In particular, we use RoBERTa-large as our language model from [Hugging Face](https://huggingface.co/roberta-large) and finetune it on the TwiBot-20 dataset. 
+Text-based methods utilize natural language processing (NLP) techniques to identify bots from a user's description and tweets. With the recent advancement in computing capability, large-scale pre-trained language models have shown excellent performance on various NLP tasks, such as language translation, sentiment analysis, summarization, and question answering. Additionally, one can fine-tune the language models on specific problems using limited amounts of training data and still obtain surprisingly good results. In particular, we use RoBERTa-large as our language model from [Hugging Face](https://huggingface.co/roberta-large) and finetune it on the TwiBot-20 dataset. Our implementation is based off of the TwiBot-20 paper [4] with minor modifications.
 
-RoBERTa [5] (Robustly Optimized BERT Pre-Training Approach) is a variant of BERT [6] (Bidirectional Encoder Representations from Transformers), a popular language processing model developed by researchers at Google. RoBERTa was introduced in 2019 by researchers at Facebook AI and implemented several design improvements based on BERT [6] to make it even more effective at NLP tasks. The model was pretrained with the Masked language modeling (MLM) objective, which allows it to learn an inner representation of the English language that can then be used to extract features useful for downstream tasks. 
+RoBERTa [5] (Robustly Optimized BERT Pre-Training Approach) is a variant of BERT [6] (Bidirectional Encoder Representations from Transformers), a popular language processing model developed by researchers at Google. RoBERTa was introduced in 2019 by researchers at Meta AI and implemented several design improvements based on BERT [6] to make it even more effective at NLP tasks. The model was pretrained with the Masked language modeling (MLM) objective, which allows it to learn an inner representation of the English language that can then be used to extract features useful for downstream tasks. 
 
-From the user description and tweets, we generated a desciprtion embedding and tweet embedding for each user, respectively. Since a user can have up to 200 tweets in the dataset, we averaged up to 10 tweet embeddings to obtain a single tweet embedding for each user to save preprocessing time. The description embedding, tweets embedding, and labels are then used to train a Multilayer Perceptron (MLP) head for fine-tuning. The figure below shows the architecture of our model.
+From the user description and tweets, we generate a description and tweet embedding for each user, respectively. Since a user can have up to 200 tweets in the dataset, we average up to 10 tweet embeddings to obtain a single tweet embedding for each user to save preprocessing time. We then use the description embedding, tweets embedding, and labels to train a Multilayer Perceptron (MLP) head for fine-tuning. The figure below shows the architecture of our model.
 
 ![Text-Based Model Architecture](/static/img/text_based_model.jpg)
 
-We implemented our model using PyTorch and use [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) for hyper-parameters tuning. The parameters we searced for included hidden dimension and dropout rate of the MLP, learning rate, and weight decay value of the Adam optimizer. After obtaining the optimal parameters according to the search, we trained the model on the training set and tracked the validation loss for early stopping. The figure below shows the training and validation loss during each training epoch. We took epoch = 17 as our final model.
+We implement our model using PyTroch and [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) for hyper-parameters tuning. The parameters we search for include the hidden dimension and dropout rate of the MLP, learning rate, and weight decay value of the Adam optimizer. After obtaining the optimal parameters according to the search, we train the model on the training set and track the validation loss for early stopping. The figure below shows the training and validation loss during each training epoch. We took epoch = 17 as our final model.
 
 ![Text Base Loss Plot](/static/img/text_base_loss_plot2.jpg)
 
-We again evaluate the performance of our model based accuracy, precision, recall, f1_score and AUC. The result is shown in the table below.
+We again evaluate the performance of our model based on accuracy, precision, recall, f1_score and AUC. The result is shown in the table below.
 
 ![Text Base Model Score Table](/static/img/text_base_score.jpg)
 
-We can see that the performance of our text-based method (test accuracy: 0.767)  is not as good as the feature-based method (test accuracy: 0.819). This is reasonable as text alone may contain less information compared to the rich engineered features we used in the feature-based methods. Nonetheless, although these two methods utilize distinct information sources, we suspected combining the two methods will boost the overall performance. Therefore, we decided to integrate both methods by stacking.
+We can see that the performance of our text-based method (test accuracy: 0.767) is not as good as the feature-based method (test accuracy: 0.819). This is reasonable as text alone may contain less information compared to the rich engineered features we use in the feature-based methods. Although these two methods utilize distinct information sources, we suspected combining the two methods would boost the overall performance. Therefore, we next integrate both methods by stacking.
 
 **Stack Feature-Based and Text-Based Method**
 
-In this short section, we explore stacking our feature-based and text-based methods.  As shown in the figure below, we first generated out-of-fold predictions on the training set using our text-based model. 
+In this section, we explore stacking our feature-based and text-based methods.  As shown in the figure below, we first generate out-of-fold predictions on the training set using our text-based model. 
 
 ![Stack Models Architecture](/static/img/stack_oof2.jpg)
 
-Next, we added the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
+Next, we add the out-of-fold predictions from our text-based method as a new feature to our feature-based method and train a CatBoost classifier on the new set of features. The result of this model is shown in the table below.
 
 ![Stacked Model Score Table](/static/img/stack_score.jpg)
 
-We can see our stack model significantly outperforms both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 0.853 which is a 0.04 gain over the best feature-based method! Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!
+We can see our stack model significantly outperforms both the feature-based and text-based models in all evaluation metrics. In particular, it obtains a test accuracy of 85.3% which is a 4% gain over the best feature-based method! This is the highest accuracy reported so far for TwiBot20 using both feature and text input [8]. Our experiment results support the common wisdom that stacking two independent learners (both in terms of models and features) can yield much better performance!
 
-After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last modal left unexplored – the neighborhood modal! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bots!
+After exploring the property and semantic features of the TwiBot-20 dataset by feature-based and text-based models, there is one last feature left unexplored – the neighborhood feature! In the next section, we will see how the following/follower relationship between users can help us better identify Twitter Bots!
 
 **Graph-Based Method**
 
@@ -151,9 +151,9 @@ While text and feature-based bot detection models have progressively shown good 
 
 This is where Geometric Deep Learning models like Graph Neural Networks (GNNs) come into play. They accurately model data which lie in non-Euclidean manifolds. Therefore, recent studies have been focusing on developing graph-based Twitter Bot detection methods. They have proved to be very promising at addressing the challenges facing Twitter Bot detection and are exhibiting state-of-the-art performance. These methods interpret users as nodes and follow relationships as edges to leverage graph mining techniques such as relational graph convolutional networks (RGCN) for graph-based bot detection. 
 
-GNNs are neural network architectures that directly operate on graph structures and therefore allow node level, edge level, and graph level prediction tasks. While many different GNN architectures exist, the simplest GNNs use the “message passing neural network” framework. In a simple sense, a geometric graph consists of nodes, edges, and some connectivity information, which can be cast as a GNN with the corresponding node features, edge features, and connectivity information in the form of adjacency matrix. This [blog post's illustration](https://distill.pub/2021/gnn-intro/) shows how GNNs work:
+GNNs are neural network architectures that directly operate on graph structures and therefore allow node, edge, and graph level prediction tasks. While many different GNN architectures exist, the simplest GNNs use the “message passing neural network” framework. In a simple sense, a geometric graph consists of nodes, edges, and some connectivity information, which can be cast as a GNN with the corresponding node features, edge features, and connectivity information in the form of adjacency matrix. This [blog post's illustration](https://distill.pub/2021/gnn-intro/) shows how GNNs work:
 
-1. A simple GNN uses a separate Neural Network to operate on each of the embeddings on each component (node, edge) of the graph to get back a learned embedding in the next GNN layer. 
+1. A simple GNN uses a separate neural network to operate on each of the embeddings on each component (node, edge) of the graph to get back a learned embedding in the next GNN layer. 
 2. In the next step, all the information is pooled using an aggregation function which aggregates node and edge information connected to a particular node.
 3. This aggregated information is passed on to the forward layer via an activation function.
 
@@ -161,20 +161,20 @@ GNNs are neural network architectures that directly operate on graph structures 
 
 The development and evaluation of graph-based Twitter Bot detection models is hindered by existing datasets. The Bot Repository3 provides a comprehensive collection of existing datasets. Of the listed datasets, only three provide the graph structure among Twitter users: Cresci-2015 [Cresci et al., 2015], TwiBot-20 [Feng et al., 2021c], and TwiBot-22 [Feng et al., 2022].
 
-We replicated the recent `FTG` method - BotRGCN [Feng et al., 2021b] - on the TwiBot-20 dataset where F, T, G denote Feature, Text, and Graph-based, respectively. We selected the BotRGCN model as it gives the highest accuracy among all feature, text, and graph-based methods on the TwiBot-20 dataset. Next, we explored different variants of the BotRGCN method. Finally, we explored generating embeddings using other pre-trained NLP models like RoBERTa and BERT.
+We replicate [8] the recent `FTG` method - BotRGCN [Feng et al., 2021b] - on the TwiBot-20 dataset where F, T, G denote Feature, Text, and Graph-based, respectively. We selected the BotRGCN model as it gives the highest accuracy among all feature, text, and graph-based methods on the TwiBot-20 dataset. Next, we explore different variants of the BotRGCN method. Finally, we also look into generating embeddings using other pre-trained NLP models like RoBERTa and BERT. The remaining paragraphs explain the BotRGCN method followed by the experimental results.
 
-Bot detection with Relational Graph Convolutional Networks (BotRCGN) proposed by [7] uses the power of GNNs to capture network interactions to address detection issues that can’t be dealt with text and feature-based models, as explained above. BotRGCN uses necessary numerical and categorical user information along with pre-trained language models.
+Bot detection with Relational Graph Convolutional Networks (BotRGCN) [7] uses the power of GNNs to capture network interactions to address detection issues that cannot be dealt with text and feature-based models, as explained above. BotRGCN uses necessary numerical and categorical user information along with pre-trained language models.
 
-![BotRCGN Picture](/static/img/botrcgn.png)
+![BotRGCN Picture](/static/img/botrcgn.png)
 
-Below is the problem description for our BotRCGN model:
+Below is the problem description for our BotRGCN model:
 
 ![BotRGCN Problem Statement](/static/img/botrcgn-problem.jpg)
-![BotRCGN Features](/static/img/botrcgn-features.jpg)
+![BotRGCN Features](/static/img/botrcgn-features.jpg)
 
-The original user features - description, tweet, numerical and categorical features - are encoded and concatenated before they are fed to GNN. The embeddings are generated using two methods: Pretrained (i) RoBERTa and (ii) BERT transformer language models, whereas rnum and rcat are derived using one-hot encoded features fed into a fully connected autoencoder with leaky-relu activations.
+*Feature Embeddings*: The original user features - description, tweet, numerical and categorical features - are encoded and concatenated before they are fed to GNN. The embeddings are generated using two methods: Pretrained (i) RoBERTa and (ii) BERT transformer language models, whereas rnum and rcat are derived using one-hot encoded features fed into a fully connected autoencoder with leaky-relu activations.
 
-BotRCGN incorporates the twitter network using relational graph convolutional networks to learn user representations and network relations. The RGCN derives the hidden representation by passing the input through the first layer and then applying the activation function. $W_1$ and $b_1$ are learnt here.
+*Architecture*: BotRGCN incorporates the twitter network using relational graph convolutional networks to learn user representations and network relations. The RGCN derives the hidden representation by passing the input through the first layer and then applying the activation function. $W_1$ and $b_1$ are learnt here.
 
 ![Learning 1](/static/img/w1-b1-learning.jpg)
 
@@ -186,21 +186,26 @@ In the final layer, the output of the MLP is:
 
 ![MLP Output](/static/img/mlp-output.jpg)
 
-where $W_2$ and $b_2$ are learnt. Finally, BotRCGN uses the cross-entropy loss with L2 regularization:
+where $W_2$ and $b_2$ are learnt. Finally, BotRGCN uses the cross-entropy loss with L2 regularization:
 
 ![Cross Entropy with L2 Regularization](/static/img/cross-entropy-l2.jpg)
 
-We trained the the BotRCGN model as implemented in [7] as our baseline model. In addition, we trained 5 other variants with different settings/architecture. Below is a summary of the 6 models and their differences: 
+We train the the BotRGCN model as implemented in [7] as our baseline model. In addition, we train 5 other variants with different settings/architecture. Below is the summary of the 6 models and their differences: 
 - Model 1: Base RGCN (with RoBERTa)
 - Model 2: RGCN with BERT
 - Model 3: Model 3: RGCN without user description
 - Model 4: RGCN without tweets
 - Model 5: RGCN with GAT layer (side note: [this blog post](https://dsgiitr.com/blogs/gat/) does an excellent job explaining what GAT layers are)
-- Model 6: RGCN with two 2RGCNConv layers
+- Model 6: RGCN with 2 RGCN conv layers
 
-Below we present the results of our 6 trained models. 
+Below we present a side-by-side comparison of our 6 models with the various performance metrics we obtained. We also include the change in trainnig loss, training accuracy, and validation accuracy over epochs. Finally, we present the raw performance scores for our 6 models.
 
-![Graph-Based Results](/static/img/performance-botrcgn.jpg)
+![Graph-Based Plots](/static/img/performance-botrcgn.jpg)
+![Graph-Based Table](/static/img/graph-based-table.jpg)
+
+**Conclusion**
+
+We explored multiple approaches for Twitter bot detection - feature-based, text-based, stacking of feature and text-based, and graph-based methods. We get similar accuracies of 85.3% and 85.8% for the stacking solution and graph-based method, respectively. The reason behind similar accuracies is that the implemented graph-based model is not using our feature engineering that is used in the stacking solution to generate embeddings. The insight behind stacking solution working this well is that neural network models do not perform as well as tree-based methods on tabular data. But the fact that the graph-based model is still performing a little bit better than the stacking solution shows the significance of neighborhood information in Twitter bot detection. Therefore, graph-based methods are definitely promising future direction for Twitter bot detection!
 
 **GitHub Artifact**
 
