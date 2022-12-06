@@ -123,7 +123,7 @@ From the user description and tweets, we generate a description and tweet embedd
 
 We implement our model using PyTroch and [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) for hyper-parameters tuning. The parameters we search for include the hidden dimension and dropout rate of the MLP, learning rate, and weight decay value of the Adam optimizer. After obtaining the optimal parameters according to the search, we train the model on the training set and track the validation loss for early stopping. The figure below shows the training and validation loss during each training epoch. We took epoch = 17 as our final model.
 
-![Text Base Loss Plot](/static/img/text_base_loss_plot2.jpg)
+![Text Base Loss Plot](/static/img/m_text_base_loss_plot.jpg)
 
 We again evaluate the performance of our model based on accuracy, precision, recall, f1_score and AUC. The result is shown in the table below.
 
